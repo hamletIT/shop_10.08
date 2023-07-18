@@ -137,6 +137,9 @@ class VarableServices
         }
     }
 
+    /**
+     * this code was copied 
+     */
     public function getStatisticSOfYear()
     {
         $application = Applications::get();
