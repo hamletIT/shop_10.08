@@ -577,6 +577,99 @@
                         </div>
                     </div>
                 </div>
+            
+                <!-- //-----------------------00 -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">@if(session()->get('locale') == "en") Big Store Table @else @lang('messages.Big Store Table') @endif</h1>
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                            <?php
+                                $countProd = count($allBigStores);
+                            ?>
+                            @if(session()->get('locale') == "en") Added Big Store @else @lang('messages.Added Big Store') @endif
+                                {{$countProd}} 
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>@if(session()->get('locale') == "en") Name @else @lang('messages.Name') @endif</th>
+                                            <th>@if(session()->get('locale') == "en") Info @else @lang('messages.Info') @endif</th>
+                                            <th>@if(session()->get('locale') == "en") Status @else @lang('messages.Status') @endif</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($allBigStores as $val)
+                                            @if($val->status === '001')
+                                            <tr>
+                                                <td>{{$val->name}}</td>
+                                                <?php $categories = count($val->categories);?>
+                                                <td>{{$categories}}</td>
+                                            </tr>
+                                            @else
+                                                <tr>
+                                                    <td>{{$val->name}}</td>
+                                                    <?php $categories = count($val->categories);?>
+                                                        <td>{{$categories}}</td>
+                                                    <td>
+                                                    <button type="button" class="btn btn-danger del_category">
+                                                    @if(session()->get('locale') == "en") delete @else @lang('messages.delete') @endif
+                                                        <input class="category_id" value='{{$val->id}}' type="hidden">
+                                                    </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    @foreach($val->bigStoreImages as $item)
+                                                        <td class="d-flex flex-row">
+                                                            <div>
+                                                            <p class="del_photo_bigStore">
+                                                                x
+                                                                <input class="big_store_id" value='{{$val->id}}' type="hidden">
+                                                                <input class="cat_poto_name" value='{{$item->name}}' type="hidden">
+                                                            </p>
+                                                               <img width="70px" height="50px" src="{{ asset('Big_Store_images'.'/'.$val->photoFileName.'/'.$item->name) }}" alt=""> 
+                                                            </div>
+                                                            <div>
+                                                                <form action="{{ route('set.bigStore.banner') }}" method="POST" class="form-horizontal" role="form">
+                                                                @csrf
+                                                                    @if($item->banner == 'on')
+                                                                        <input type="checkbox" checked name="banner" class="form-control" />
+                                                                    @else
+                                                                        <input type="checkbox" name="banner" class="form-control" />
+                                                                    @endif
+                                                                    <input type="hidden" value="{{$item->id}}" name="photo_id" class="form-control"/>
+                                                                    <input type="hidden" value="{{$val->id}}" name="big_store_id" class="form-control"/>
+                                                                    <button type="submit" class="btn btn-primary">@if(session()->get('locale') == "en") Set as banner @else @lang('messages.Set as banner') @endif</button>
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                    @endforeach
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        <form action="{{ route('add.bigStore_photos') }}" method="POST" enctype="multipart/form-data" class="form-horizontal" role="form">
+                                                        @csrf
+                                                            <input type="file" name="image[]" multiple="multiple" class="form-control" id="customFile_ajax" />
+                                                            <input type="hidden" value="{{$val->id}}" name="big_store_id" multiple="multiple" class="form-control" id="customFile_ajax" />
+                                                            <button type="submit" class="btn btn-primary">@if(session()->get('locale') == "en") Send @else @lang('messages.Send') @endif</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="container-fluid">
                     <!-- Page Heading -->
@@ -1120,6 +1213,21 @@
             type: "POST",
             url:"{{ route('delete.category.photo') }}",
             data:{category_id:category_id,cat_poto_name:cat_poto_name},
+            success:function(data){
+                // console.log(data);
+                location.reload();
+            }
+        });
+    });
+    $(".del_photo_bigStore").click(function(){
+        var xbtn = $(this).children();
+        var big_store_id = $($(this).children([0])[0]).val();
+        var cat_poto_name = $($(this).children([1])[1]).val();
+        
+        $.ajax({
+            type: "POST",
+            url:"{{ route('delete.bigstore.photo') }}",
+            data:{big_store_id:big_store_id,cat_poto_name:cat_poto_name},
             success:function(data){
                 // console.log(data);
                 location.reload();

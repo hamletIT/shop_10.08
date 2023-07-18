@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         $bigStore = DB::table('big_stores')->insertGetId([
             'name' => 'test big store',
             'info' => 'test big store info',
-            'status' => '0',
+            'status' => '001',
             'updated_at' => now(),
             'created_at' => now(),
         ]);
