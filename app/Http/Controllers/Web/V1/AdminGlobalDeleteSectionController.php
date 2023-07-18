@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Web\V1;
 
+use App\Models\BigStorePhotos;
+use App\Models\BigStores;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Products;
 use App\Models\Options;
@@ -60,6 +62,25 @@ class AdminGlobalDeleteSectionController extends BaseController
         }
         $category = Category::where('id',$request->category_id)->first();
         $photo = CategoryPhotos::where('category_id',$category->id)->where('name',$request['cat_poto_name'])->first();
+        unlink($photo['path'].'/'.$photo['name']);
+        $photo->delete();
+
+        return response()->json(['deleted'=>true]);
+    }
+
+    public function deleteBigstorePhoto(Request $request)
+    {
+        $rules = [
+            'big_store_id' => 'required',
+            'cat_poto_name' => 'required',
+        ];
+       
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+        }
+        $bigStore = BigStores::where('id',$request->big_store_id)->first();
+        $photo = BigStorePhotos::where('big_store_id',$bigStore->id)->where('name',$request['cat_poto_name'])->first();
         unlink($photo['path'].'/'.$photo['name']);
         $photo->delete();
 

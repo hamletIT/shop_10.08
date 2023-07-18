@@ -527,6 +527,44 @@ class AdminGlobalCreateOrAddSectionController extends BaseController
         return redirect()->back();
     }
 
+    public function addPhotosByNameOfBigStore(Request $request)
+    {
+        $rules = [
+            'big_store_id' => 'required',
+            'image.*' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+        }
+        $image = array();
+        $bigStore = BigStores::where('id',$request->big_store_id)->first();
+        if($file = $request->file('image')){
+            foreach($file as $file){
+                $image_name = md5(rand(1000,10000));
+                $ext = strtolower($file->getClientOriginalExtension());
+                $image_full_name = $image_name.'.'.$ext;
+                if (!File::exists('Big_Store_images'.'/'.$bigStore['photoFileName'])) {
+                    File::makeDirectory('Big_Store_images'.'/'.$bigStore['photoFileName']);
+                }
+                $uploade_path = public_path('Big_Store_images'.'/'.$bigStore['photoFileName']);
+                $image_url = $uploade_path.$image_full_name;
+                $file->move($uploade_path,$image_full_name);
+                $image[] = $image_url;
+                BigStorePhotos::create([
+                    'name' => $image_full_name,
+                    'path' => $uploade_path,
+                    'big_store_id' => $request->big_store_id,
+                    'updated_at' => now(),
+                    'created_at' => now(),
+                ]);
+            }
+        }
+
+        return redirect()->back();
+    }
+
     public function addPhotosByNameOfSubCategory(Request $request)
     {
         $rules = [
@@ -600,6 +638,29 @@ class AdminGlobalCreateOrAddSectionController extends BaseController
             'banner' => null
         ]);
         $setBanner = CategoryPhotos::where('id',$request['photo_id'])->update([
+            'banner' => $request['banner']
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function setBannerBigStorePhoto(Request $request)
+    {
+        // dd($request->all());
+        $rules = [
+            'photo_id' => 'required',
+            'banner' => 'required',
+            'big_store_id' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return redirect()->back()->with(array('errors' => $validator->getMessageBag()->toArray()));
+        }
+        
+        BigStorePhotos::where('big_store_id',$request['big_store_id'])->update([
+            'banner' => null
+        ]);
+        BigStorePhotos::where('id',$request['photo_id'])->update([
             'banner' => $request['banner']
         ]);
 

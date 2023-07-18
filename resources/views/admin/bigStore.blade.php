@@ -213,7 +213,7 @@
                         @csrf
                         <p>
                         </p>
-                        <div class="form-group">
+                        <div class="d-flex">
                         <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Select field @else @lang('messages.Select field') @endif</label>
                             <select name ="table_name" class="form-select form-select-lg">
                                 @if(isset($productFilter))
@@ -252,7 +252,6 @@
                             </div>
                         </div>
                     </form>
-
                  
                 </nav>
                 <!-- End of Topbar -->

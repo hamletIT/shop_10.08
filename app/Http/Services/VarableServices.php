@@ -18,7 +18,7 @@ class VarableServices
 {
     public function getAllTypeOfCategories()
     {
-        $allBigStores = BigStores::get();
+        $allBigStores = BigStores::with(['categories','bigStoreImages'])->get();
         $allStores = Stores::get();
         $allCategory = Category::get();
         $allSubCategory = SubCategory::get();
@@ -39,6 +39,7 @@ class VarableServices
 
     public function getdashboardVarables()
     {
+        $allBigStores = BigStores::with(['categories','bigStoreImages'])->get();
         $application = Applications::get();
         $allUsers = User::with('userStore')->get();
         $allProducts = Products::with('store')->get();
@@ -49,7 +50,7 @@ class VarableServices
         $allSubCategory = SubCategory::with('subCategoryImages')->with('products')->get();
         $allChildSubCategory = ChildSubCategory::with('ChildsubCategoryImages')->with('products')->get();
 
-        return compact('singleCategory','allUsers','allProducts','allStores','alloptions','application','allCategory','allSubCategory');
+        return compact('singleCategory','allUsers','allProducts','allStores','alloptions','application','allCategory','allSubCategory','allBigStores');
     }
 
     /**
