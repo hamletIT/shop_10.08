@@ -87,11 +87,9 @@ return [
     'Languages' => 'Languages',
     'Set as banner' => 'Set as banner',
     'Added Sub Category' => 'Added Sub Category',
-    'Category' => 'Category',
     'Sub Category' => 'Sub Category',
     'Rating' => 'Rating',
     'Status' => 'Status',
-    'Update Category' => 'Update Category',
     'Photo File Name' => 'Photo File Name',
     'Category images' => 'Category images',
     'Sub category images' => 'Sub category images',
@@ -122,4 +120,5 @@ return [
     'Select the child sub category you want to update' => 'Select the child sub category you want to update',
     'Added Child Sub Category' => 'Added Child Sub Category',
     'Child Sub Categories' => 'Child Sub Categories',
+    'Child Sub category images' => 'Child Sub category images',
 ];

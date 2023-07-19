@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use App\Models\BigStores;
 use App\Models\User;
 use App\Models\Carts;
 use App\Models\Products;
@@ -30,10 +31,16 @@ use GuzzleHttp\Psr7\Request as Req;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
+use App\Http\Services\ApiVarableServices;
 use Illuminate\Routing\Controller as BaseController;
 
 class ApiSubCategoryController extends BaseController
 {
+    public function __construct(
+        public ApiVarableServices $apiVarableServices,
+    ) {
+       
+    }
     /** 
      * @OA\Post(
      *     path="/api/create/sub/category",
@@ -120,20 +127,7 @@ class ApiSubCategoryController extends BaseController
         }
 
         return response()->json(['subCategories'=>BigStores::with(
-            [
-            'bigStoreImages',
-            'categories',
-            'categories.categoryImages',
-            'categories.categories',
-            'categories.categories.subCategoryImages',
-            'categories.categories.categories.ChildsubCategoryImages',
-            'categories.categories.categories.products',
-            'categories.categories.categories.products.store',
-            'categories.categories.categories.products.productPrice',
-            'categories.categories.categories.products.productImages',
-            'categories.categories.categories.products.productOptions',
-            'categories.categories.categories.products.productOptions.optionImages'
-            ]
+            $this->apiVarableServices->StructureOfTheStandardSchema()
         )->get()]);
     }
 
@@ -189,25 +183,12 @@ class ApiSubCategoryController extends BaseController
         if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
-        $subCategory = SubCategory::where('id',$request['sub_category_id'])->update([
+        SubCategory::where('id',$request['sub_category_id'])->update([
             'title' => $request['title']
         ]);
 
         return response()->json(['subCategories'=>BigStores::with(
-            [
-            'bigStoreImages',
-            'categories',
-            'categories.categoryImages',
-            'categories.categories',
-            'categories.categories.subCategoryImages',
-            'categories.categories.categories.ChildsubCategoryImages',
-            'categories.categories.categories.products',
-            'categories.categories.categories.products.store',
-            'categories.categories.categories.products.productPrice',
-            'categories.categories.categories.products.productImages',
-            'categories.categories.categories.products.productOptions',
-            'categories.categories.categories.products.productOptions.optionImages'
-            ]
+            $this->apiVarableServices->StructureOfTheStandardSchema()
         )->get()]);
     }
 
@@ -256,10 +237,10 @@ class ApiSubCategoryController extends BaseController
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
         $subCategoryProduct = SubCategory::where('status','001')->first();
-        $categoryPivot = pivot_sub_categories_products::where('sub_category_id',$request['sub_category_id'])->update([
+        pivot_sub_categories_products::where('sub_category_id',$request['sub_category_id'])->update([
             'sub_category_id' => $subCategoryProduct->id,
         ]);
-        $category = Category::where('id',$request['category_id'])->delete();
+        Category::where('id',$request['category_id'])->delete();
            
         return response()->json(['deleted'=>true]);
     }
@@ -310,18 +291,7 @@ class ApiSubCategoryController extends BaseController
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
 
-        $allSubCategory = SubCategory::Where('title', 'LIKE', '%'.$request['title'].'%')->with([
-            'categories',
-            'categories.ChildsubCategoryImages',
-            'categories.products',
-            'categories.products.store',
-            'categories.products.productPrice',
-            'categories.products.productImages',
-            'categories.products.productOptions',
-            'categories.products.productOptions.optionImages'
-        ])->get();
-
-        return response()->json(['subCategories'=>$allSubCategory]);
+        return response()->json(['subCategories' => $this->apiVarableServices->filteredSubCategory($request['title'])]);
     }
 
      /** 
@@ -355,20 +325,7 @@ class ApiSubCategoryController extends BaseController
     public function getSubCategories(Request $request)
     {
         return response()->json(['subCategories'=>BigStores::with(
-            [
-            'bigStoreImages',
-            'categories',
-            'categories.categoryImages',
-            'categories.categories',
-            'categories.categories.subCategoryImages',
-            'categories.categories.categories.ChildsubCategoryImages',
-            'categories.categories.categories.products',
-            'categories.categories.categories.products.store',
-            'categories.categories.categories.products.productPrice',
-            'categories.categories.categories.products.productImages',
-            'categories.categories.categories.products.productOptions',
-            'categories.categories.categories.products.productOptions.optionImages'
-            ]
+           $this->apiVarableServices->StructureOfTheStandardSchema()
         )->get()]);
     }
 }

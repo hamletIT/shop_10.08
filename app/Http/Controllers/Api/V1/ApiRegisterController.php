@@ -15,11 +15,18 @@ use Laravel\Jetstream\Jetstream;
 use GuzzleHttp\Psr7\Request as Req;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use App\Http\Services\ApiVarableServices;
 use Illuminate\Routing\Controller as BaseController;
 
 class ApiRegisterController extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
+
+    public function __construct(
+        public ApiVarableServices $apiVarableServices,
+    ) {
+       
+    }
     /**
     * @OA\Post(
     *    path="/api/register/sms",
@@ -91,20 +98,7 @@ class ApiRegisterController extends BaseController
         }
 
         $randomNumber = rand(config('app.rand_min'),config('app.rand_max'));
-
-        $client = new Client();
-        $headers = [
-            'Content-Type' => 'application/xml'
-        ];
-        
-        $requestSend = new Req('GET', 'https://smsc.ru/sys/send.php?login='.config('phone.SMSC_LOGIN').'&psw='.config('phone.SMSC_PASSWORD').'&phones='.$input['phone'].'&mes=youre verification code is '.$randomNumber.'', $headers);
-        $requestBalance = new Req('GET', 'https://smsc.ru/sys/balance.php?login='.config('phone.SMSC_LOGIN').'&psw='.config('phone.SMSC_PASSWORD').'' , $headers);
-        $requestSendCost = new Req('GET', 'https://smsc.ru/sys/send.php?login='.config('phone.SMSC_LOGIN').'&psw='.config('phone.SMSC_PASSWORD').'&phones='.$input['phone'].'&mes=sms price&cost=1' , $headers);
-        
-        $resSendCost = $client->sendAsync($requestSendCost)->wait();
-        $resBalance = $client->sendAsync($requestBalance)->wait();
-      
-        $send = $client->sendAsync($requestSend)->wait();
+        $smsCenterAnswer = $this->apiVarableServices->requestThatSendsACodeToYourPhone($input['phone'],$randomNumber);
         $adminIsset = User::where('name','Admin')->first();
 
         if($adminIsset == null && $input['name'] == 'Admin'){
@@ -135,7 +129,7 @@ class ApiRegisterController extends BaseController
 
         $token = $user->createToken('Token Name')->accessToken;
 
-        return response()->json(['sms_params'=>$send->getBody()->getContents(),'token'=>$token]);
+        return response()->json(['sms_params'=>$smsCenterAnswer,'token'=>$token]);
     }
 
     public function registerByCall(Request $input)
@@ -145,7 +139,6 @@ class ApiRegisterController extends BaseController
             'name'    =>'required|string|max:255',
             'email'   =>'required|string|email|max:255|unique:users',
             'password'=>'required|min:6',
-           
         ];
         $validator = Validator::make($input->all(), $rules);
 
@@ -154,22 +147,8 @@ class ApiRegisterController extends BaseController
         }
 
         $randomNumber = rand(config('app.rand_min'),config('app.rand_max'));
-
-        $client = new Client();
-        $headers = [
-            'Content-Type' => 'application/xml'
-        ];
-       
-
-        $requestSendCall = new Req('GET', 'https://smsc.ru/sys/wait_call.php?login='.config('phone.SMSC_LOGIN').'&psw='.config('phone.SMSC_PASSWORD').'&phone='.$input['phone'].'', $headers);
-        $requestBalance = new Req('GET', 'https://smsc.ru/sys/balance.php?login='.config('phone.SMSC_LOGIN').'&psw='.config('phone.SMSC_PASSWORD').'' , $headers);
-        $requestSendCost = new Req('GET', 'https://smsc.ru/sys/send.php?login='.config('phone.SMSC_LOGIN').'&psw='.config('phone.SMSC_PASSWORD').'&phones='.$input['phone'].'&mes=sms price&cost=1' , $headers);
-
-        $resSendCost = $client->sendAsync($requestSendCost)->wait();
-        $resBalance = $client->sendAsync($requestBalance)->wait();
-        $send = $client->sendAsync($requestSendCall)->wait();
-
-        $user = User::create([
+        $callCenterAnswer = $this->apiVarableServices->requestThatCallToYourPhone($input['phone']);
+        User::create([
             'code' => $randomNumber,
             'status' => 0,
             'phone' => $input['phone'],
@@ -178,7 +157,7 @@ class ApiRegisterController extends BaseController
             'password' => Hash::make($input['password']),
         ]);
 
-        return response()->json(['param'=>$send->getBody()->getContents(),'comment'=>' Where:<phone> phone number to which you should make a call within 15 minutes to confirm your phone number.<all_phones> list of all possible phone numbers, one of which used the system to call the subscriber (depending on the country).']);
+        return response()->json(['param'=>$callCenterAnswer,'comment'=>' Where:<phone> phone number to which you should make a call within 15 minutes to confirm your phone number.<all_phones> list of all possible phone numbers, one of which used the system to call the subscriber (depending on the country).']);
     }
 
     /** 

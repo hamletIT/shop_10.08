@@ -8,9 +8,16 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use App\Models\ChildSubCategory;
 use App\Models\ChildSubCategoryPhotos;
+use App\Http\Services\ApiVarableServices;
 
 class ApiChildSubCategoryController extends Controller
 {   
+    public function __construct(
+        public ApiVarableServices $apiVarableServices,
+    ) {
+       
+    }
+
     /**
     *  @OA\Get(
     *     path="/api/get/child/sub/category",
@@ -88,7 +95,7 @@ class ApiChildSubCategoryController extends Controller
      */
     public function getChildSubCategories(Request $request)
     {
-        return response()->json(['ChildSubCategory' => ChildSubCategory::with(['ChildsubCategoryImages','products'])->get()]);
+        return response()->json(['ChildSubCategory' => ChildSubCategory::with($this->apiVarableServices->childSubCategoryAndImages())->get()]);
     }
 
     /**
@@ -175,7 +182,7 @@ class ApiChildSubCategoryController extends Controller
             }
         }
 
-        return response()->json(['ChildSubCategory'=>ChildSubCategory::with(['ChildsubCategoryImages','products'])->get()]);
+        return response()->json(['ChildSubCategory'=>ChildSubCategory::with($this->apiVarableServices->childSubCategoryAndImages())->get()]);
     }
 
     /**
@@ -246,7 +253,12 @@ class ApiChildSubCategoryController extends Controller
             }
         }
 
-        return response()->json(['ChildSubCategory'=>ChildSubCategory::where('id',$request->child_sub_category_id)->with(['ChildsubCategoryImages','products'])->get()]);
+        return response()->json(
+            [
+                'ChildSubCategory'=>ChildSubCategory::where('id',$request->child_sub_category_id)
+                ->with($this->apiVarableServices->childSubCategoryAndImages())->get()
+            ]
+        );
     }
 
     /**
@@ -305,7 +317,12 @@ class ApiChildSubCategoryController extends Controller
         unlink($photo['path'].'/'.$photo['name']);
         $photo->delete();
 
-        return response()->json(['ChildSubCategory'=>ChildSubCategory::where('id',$request->child_sub_category_id)->with(['ChildsubCategoryImages','products'])->get()]);
+        return response()->json(
+            [
+                'ChildSubCategory'=>ChildSubCategory::where('id',$request->child_sub_category_id)
+                ->with($this->apiVarableServices->childSubCategoryAndImages())->get()
+            ]
+        );
     }
 
     /**
@@ -363,6 +380,11 @@ class ApiChildSubCategoryController extends Controller
             'title' => $request['title']
         ]);
 
-        return response()->json(['ChildSubCategory'=>ChildSubCategory::where('id',$request['category_id'])->with(['ChildsubCategoryImages','products'])->get()]);
+        return response()->json(
+            [
+                'ChildSubCategory'=>ChildSubCategory::where('id',$request['category_id'])
+                ->with($this->apiVarableServices->childSubCategoryAndImages())->get()
+            ]
+        );
     }
 }

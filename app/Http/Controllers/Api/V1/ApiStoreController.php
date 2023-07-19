@@ -2,24 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Laravel\Fortify\Contracts\CreatesNewUsers;
 use App\Models\User;
-use App\Models\Carts;
-use App\Models\Products;
 use App\Models\Stores;
-use App\Models\Orders;
-use App\Models\Options;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Jetstream\Jetstream;
-use GuzzleHttp\Psr7\Request as Req;
-use GuzzleHttp\Client;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\File;
 use Illuminate\Routing\Controller as BaseController;
 
 class ApiStoreController extends BaseController
