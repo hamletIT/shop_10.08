@@ -8,9 +8,15 @@ use App\Models\BigStores;
 use App\Models\BigStorePhotos;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
+use App\Http\Services\ApiVarableServices;
 
 class ApiBigStoreController extends Controller
 {
+    public function __construct(
+        public ApiVarableServices $apiVarableServices,
+    ) {
+       
+    }
     /** 
      * @OA\Get(
      *     path="/api/get/bigStores",
@@ -41,22 +47,7 @@ class ApiBigStoreController extends Controller
      */
     public function getBigStores(Request $request)
     {
-        return response()->json(['Big_stores'=>BigStores::with(
-            [
-            'bigStoreImages',
-            'categories',
-            'categories.categoryImages',
-            'categories.categories',
-            'categories.categories.subCategoryImages',
-            'categories.categories.categories.ChildsubCategoryImages',
-            'categories.categories.categories.products',
-            'categories.categories.categories.products.store',
-            'categories.categories.categories.products.productPrice',
-            'categories.categories.categories.products.productImages',
-            'categories.categories.categories.products.productOptions',
-            'categories.categories.categories.products.productOptions.optionImages'
-            ]
-        )->get()]);
+        return response()->json(['Big_stores'=>BigStores::with($this->apiVarableServices->StructureOfTheStandardSchema())->get()]);
     }
 
     /** 
@@ -104,20 +95,7 @@ class ApiBigStoreController extends Controller
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
         return response()->json(['Big_stores'=>BigStores::where('id',$request->big_store_id)->with(
-            [
-            'bigStoreImages',
-            'categories',
-            'categories.categoryImages',
-            'categories.categories',
-            'categories.categories.subCategoryImages',
-            'categories.categories.categories.ChildsubCategoryImages',
-            'categories.categories.categories.products',
-            'categories.categories.categories.products.store',
-            'categories.categories.categories.products.productPrice',
-            'categories.categories.categories.products.productImages',
-            'categories.categories.categories.products.productOptions',
-            'categories.categories.categories.products.productOptions.optionImages'
-            ]
+            $this->apiVarableServices->StructureOfTheStandardSchema()
         )->get()]);
     }
 
@@ -215,22 +193,7 @@ class ApiBigStoreController extends Controller
             }
         }
 
-        return response()->json(['Big_store'=>BigStores::with(
-            [
-            'bigStoreImages',
-            'categories',
-            'categories.categoryImages',
-            'categories.categories',
-            'categories.categories.subCategoryImages',
-            'categories.categories.categories.ChildsubCategoryImages',
-            'categories.categories.categories.products',
-            'categories.categories.categories.products.store',
-            'categories.categories.categories.products.productPrice',
-            'categories.categories.categories.products.productImages',
-            'categories.categories.categories.products.productOptions',
-            'categories.categories.categories.products.productOptions.optionImages'
-            ]
-        )->get()]);
+         return response()->json(['Big_stores'=>BigStores::with($this->apiVarableServices->StructureOfTheStandardSchema())->get()]);
     }
 
     /** 
@@ -303,21 +266,8 @@ class ApiBigStoreController extends Controller
             }
         }
 
-        return response()->json(['Big_store'=>BigStores::where('id',$request->big_store_id)->with(
-            [
-            'bigStoreImages',
-            'categories',
-            'categories.categoryImages',
-            'categories.categories',
-            'categories.categories.subCategoryImages',
-            'categories.categories.categories.ChildsubCategoryImages',
-            'categories.categories.categories.products',
-            'categories.categories.categories.products.store',
-            'categories.categories.categories.products.productPrice',
-            'categories.categories.categories.products.productImages',
-            'categories.categories.categories.products.productOptions',
-            'categories.categories.categories.products.productOptions.optionImages'
-            ]
+        return response()->json(['Big_stores'=>BigStores::where('id',$request->big_store_id)->with(
+            $this->apiVarableServices->StructureOfTheStandardSchema()
         )->get()]);
     }
 
@@ -379,21 +329,8 @@ class ApiBigStoreController extends Controller
         unlink($photo['path'].'/'.$photo['name']);
         $photo->delete();
 
-        return response()->json(['Big_store'=>BigStores::where('id',$request->big_store_id)->with(
-            [
-            'bigStoreImages',
-            'categories',
-            'categories.categoryImages',
-            'categories.categories',
-            'categories.categories.subCategoryImages',
-            'categories.categories.categories.ChildsubCategoryImages',
-            'categories.categories.categories.products',
-            'categories.categories.categories.products.store',
-            'categories.categories.categories.products.productPrice',
-            'categories.categories.categories.products.productImages',
-            'categories.categories.categories.products.productOptions',
-            'categories.categories.categories.products.productOptions.optionImages'
-            ]
+        return response()->json(['Big_stores'=>BigStores::where('id',$request->big_store_id)->with(
+            $this->apiVarableServices->StructureOfTheStandardSchema()
         )->get()]);
     }
 }

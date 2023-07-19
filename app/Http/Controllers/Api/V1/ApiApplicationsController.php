@@ -75,43 +75,37 @@ class ApiApplicationsController extends Controller
      */
     public function createApplications(Request $request) 
     {
-        $createApplication = Applications::insertGetId([
-            'name' => $request['name'] !== null ? $request['name'] : null,
-            'phone' => $request['phone'] !== null ? $request['phone'] : null,
-            'password' => $request['password'] !== null ? $request['password'] : null,
-            'text' => $request['text'] !== null ? $request['text'] : null,
+        $data = [
+            'name' => $request->input('name'),
+            'phone' => $request->input('phone'),
+            'password' => $request->input('password'),
+            'text' => $request->input('text'),
             'updated_at' => now(),
             'created_at' => now(),
-        ]);
-
-        if (
-            $request['name'] == null && 
-            $request['phone'] == null && 
-            $request['password'] == null && 
-            $request['text'] == null && 
-            $request['email'] == null
-        ) {
-            return response()->json(['application'=>'Cannot be created because all fields were empty','status'=>false]);
-        } else {
-            $applications = Applications::where('id',$createApplication)->first();
-            // dd($applications);
-            $data = array(
-                'applications'=>$applications,
-            );
-            $usersMail = $request['email'];
-            try {
-                $sendEmail = Mail::send('mail.email', $data, function($message) use($usersMail){
-                    $message
-                        ->to($usersMail,'Administrator of Dstdelivery')
-                        ->subject('Dstdelivery');
-                    $message->from(config('mail.from.address'),'Dstdelivery');
-                });
-            } catch (\Throwable $th) {
-                return response()->json(['application'=>'Created but not sended email','status'=>true]);
-            }
-          
-            return response()->json(['application'=>'Created and sended email','status'=>true]);
+        ];
+        // Check if all fields are empty
+        if (empty(array_filter($data)) && empty($request->input('email'))) {
+            return response()->json(['application' => 'Cannot be created because all fields were empty', 'status' => false]);
         }
+        // Insert the data into the database
+        $createApplication = Applications::insertGetId($data);
+        $applications = Applications::find($createApplication);
+        $data = [
+            'applications' => $applications,
+        ];
+        $usersMail = $request->input('email');
+        try {
+            Mail::send('mail.email', $data, function ($message) use ($usersMail) {
+                $message
+                    ->to($usersMail, 'Administrator of Dstdelivery')
+                    ->subject('Dstdelivery');
+                $message->from(config('mail.from.address'), 'Dstdelivery');
+            });
+        } catch (\Throwable $th) {
+            return response()->json(['application' => 'Created but not sent email', 'status' => true]);
+        }
+
+        return response()->json(['application' => 'Created and sent email', 'status' => true]);
     }
 
     /**
@@ -192,12 +186,12 @@ class ApiApplicationsController extends Controller
         if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
-        $deleteAplicationFields = Applications::where('id',$request['application_id'])->delete();
+        $deletedRows = Applications::where('id', $request->input('application_id'))->delete();
 
-        if ($deleteAplicationFields) {
-            return response()->json(['application'=>'Deleted','status'=>true]);
+        if ($deletedRows) {
+            return response()->json(['application' => 'Deleted', 'status' => true]);
         } else {
-            return response()->json(['application'=>'Failed to delete','status'=>false]);
+            return response()->json(['application' => 'Failed to delete', 'status' => false]);
         }
     }
 }

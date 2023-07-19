@@ -87,11 +87,9 @@ return [
     'Languages' => 'Языки',
     'Set as banner' => 'Установить как баннер',
     'Added Sub Category' => 'Добавлена ​​подкатегория',
-    'Category' => '​​Категория',
     'Sub Category' => 'Подкатегория',
     'Rating' => 'Рейтинг',
     'Status' => 'Положение дел',
-    'Update Category' => 'Обновить категорию',
     'Photo File Name' => 'Имя файла фотографии',
     'Category images' => 'Изображения категории',
     'Sub category images' => 'Изображения подкатегорий',
@@ -122,4 +120,5 @@ return [
     'Select the child sub category you want to update' => 'Выберите дочернюю подкатегорию, которую вы хотите обновить',
     'Added Child Sub Category' => 'Добавлена ​​дочерняя подкатегория',
     'Child Sub Categories' => 'Дочерние подкатегории',
+    'Child Sub category images' => 'Изображения дочерней подкатегории',
 ];

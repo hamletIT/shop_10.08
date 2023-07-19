@@ -2,38 +2,28 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Laravel\Fortify\Contracts\CreatesNewUsers;
-use App\Models\User;
-use App\Models\Carts;
+use App\Models\BigStores;
 use App\Models\Products;
-use App\Models\Stores;
-use App\Models\Orders;
 use App\Models\Options;
 use App\Models\Photos;
-use App\Models\OptionPhotos;
-use App\Models\Applications;
-use App\Models\Category;
-use App\Models\SubCategory;
 use App\Models\Prices;
 use App\Models\pivot_categories_products;
 use App\Models\pivot_sub_categories_products;
-use App\Models\CategoryPhotos;
-use App\Models\SubCategoryPhotos;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Validation\ValidatesRequests;
+use App\Models\pivot_child_sub_categories;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Jetstream\Jetstream;
-use GuzzleHttp\Psr7\Request as Req;
-use GuzzleHttp\Client;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Routing\Controller as BaseController;
+use App\Http\Services\ApiVarableServices;
 
 class ApiProductController extends BaseController
 {
+    public function __construct(
+        public ApiVarableServices $apiVarableServices,
+    ) {
+       
+    }
     /** 
     * @OA\Post(
     *     path="/api/create/product",
@@ -284,22 +274,7 @@ class ApiProductController extends BaseController
             }
         }
 
-        return response()->json(['category' => BigStores::with(
-            [
-            'bigStoreImages',
-            'categories',
-            'categories.categoryImages',
-            'categories.categories',
-            'categories.categories.subCategoryImages',
-            'categories.categories.categories.ChildsubCategoryImages',
-            'categories.categories.categories.products',
-            'categories.categories.categories.products.store',
-            'categories.categories.categories.products.productPrice',
-            'categories.categories.categories.products.productImages',
-            'categories.categories.categories.products.productOptions',
-            'categories.categories.categories.products.productOptions.optionImages'
-            ]
-        )->get()]);
+        return response()->json(['category' => BigStores::with($this->apiVarableServices->StructureOfTheStandardSchema())->get()]);
     }
 
     /** 
@@ -363,7 +338,9 @@ class ApiProductController extends BaseController
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
 
-        $product = Products::where('id',$request->product_id)->where('productNumber',$request->productNumber)->with(['productPrice','productImages','productOptions','productOptions.optionImages'])->first();
+        $product = Products::where('id',$request->product_id)->where('productNumber',$request->productNumber)->with(
+            $this->apiVarableServices->productsSchema()
+        )->first();
         if ($product == null) {
             return response()->json(['status'=>'No data found for these {id:'.$request->id.', code:'.$request->productNumber.'']);
         } else {
@@ -438,7 +415,8 @@ class ApiProductController extends BaseController
         if ($product == null) {
             return response()->json(['product'=>'No data found']);
         }
-        
+        $optionOfProduct = Options::where('product_id',$request->product_id)->first();
+
         File::deleteDirectory(public_path('Images'.'/'.$product['photoFileName']));
         File::deleteDirectory(public_path('Option_Images'.'/'.$optionOfProduct['photoFileName']));
 
@@ -630,7 +608,9 @@ class ApiProductController extends BaseController
             }
         }
 
-        return response()->json(['product'=>Products::where('id',$request->product_id)->with(['productPrice','productImages','productOptions','productOptions.optionImages'])->first()]);
+        return response()->json(['product'=>Products::where('id',$request->product_id)->with(
+            $this->apiVarableServices->productsSchema()
+        )->first()]);
     }
 
     /**
@@ -672,9 +652,14 @@ class ApiProductController extends BaseController
     {
         if(!is_null($request['name'])) {
 
-            $productFilter = Products::Where('name', 'LIKE', '%'.$request['name'].'%')->with(['productPrice','productImages','productOptions','productOptions.optionImages'])->get();
+            return response()->json(
+                [
+                    'product' => Products::Where('name', 'LIKE', '%'.$request['name'].'%')->with(
+                    $this->apiVarableServices->productsSchema()
+                )->get()
+                ]
+            );
            
-            return response()->json(['product' => $productFilter]);
         }
 
         return response()->json(['product' => []]);
@@ -725,11 +710,10 @@ class ApiProductController extends BaseController
         if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
-       
-        $products = Products::where('store_id',$request['store_id'])->with(['store','productPrice','productImages','productOptions','productOptions.optionImages'])->get();
         
-        return response()->json(['products' => $products]);
-    
+        return response()->json(['products' => Products::where('store_id',$request['store_id'])->with(
+            $this->apiVarableServices->productsSchema()
+        )->get()]);
     }
 
     /**
@@ -762,7 +746,7 @@ class ApiProductController extends BaseController
     */
     public function getPhotosAndProducts(Request $request)
     {
-        return response()->json(['products' => Products::with(['productPrice','productImages','productOptions','productOptions.optionImages'])->get()]);
+        return response()->json(['products' => Products::with($this->apiVarableServices->productsSchema())->get()]);
     }
 
     // /**
@@ -862,9 +846,7 @@ class ApiProductController extends BaseController
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
         
-        $product = Products::where('id',$request['product_id'])->with(['productPrice','productImages','productOptions','productOptions.optionImages'])->first();
-    
-        return response()->json(['product' => $product]);
+        return response()->json(['product' => Products::where('id',$request['product_id'])->with($this->apiVarableServices->productsSchema())->first()]);
     }
 
      /**
@@ -898,20 +880,7 @@ class ApiProductController extends BaseController
     public function getProductList(Request $request)
     {
         return response()->json(['category' => BigStores::with(
-            [
-            'bigStoreImages',
-            'categories',
-            'categories.categoryImages',
-            'categories.categories',
-            'categories.categories.subCategoryImages',
-            'categories.categories.categories.ChildsubCategoryImages',
-            'categories.categories.categories.products',
-            'categories.categories.categories.products.store',
-            'categories.categories.categories.products.productPrice',
-            'categories.categories.categories.products.productImages',
-            'categories.categories.categories.products.productOptions',
-            'categories.categories.categories.products.productOptions.optionImages'
-            ]
+           $this->apiVarableServices->StructureOfTheStandardSchema()
         )->get()]);
     }
 }
