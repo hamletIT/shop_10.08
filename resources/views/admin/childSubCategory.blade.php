@@ -313,7 +313,7 @@
                                 </div> 
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-9">
-                                    <a class="btn btn-primary" target="_blank" href="http://127.0.0.1:8000/api/documentation#/Create%20store/0f469761a63d8080fd2b7345f203478b">@if(session()->get('locale') == "en") Try in Swagger @else @lang('messages.Try in Swagger') @endif</a>
+                                    <a class="btn btn-primary" target="_blank" href="https://dstdelivery.sk-its.ru/api/documentation#/Child%20Sub%20Category%20Section/07c9bb93ed171f2db26d192ae4cef15d">@if(session()->get('locale') == "en") Try in Swagger @else @lang('messages.Try in Swagger') @endif</a>
                                     </div>
                                 </div> 
                             </form>
@@ -363,7 +363,7 @@
                                     </div> 
                                     <div class="form-group">
                                         <div class="col-sm-offset-3 col-sm-9">
-                                        <a class="btn btn-primary" target="_blank" href="http://127.0.0.1:8000/api/documentation#/Create%20store/0f469761a63d8080fd2b7345f203478b">@if(session()->get('locale') == "en") Try in Swagger @else @lang('messages.Try in Swagger') @endif</a>
+                                        <a class="btn btn-primary" target="_blank" href="https://dstdelivery.sk-its.ru/api/documentation#/Child%20Sub%20Category%20Section/0dfb5b3a5856832b92085b576d177b1d">@if(session()->get('locale') == "en") Try in Swagger @else @lang('messages.Try in Swagger') @endif</a>
                                         </div>
                                     </div> 
                                 </form>

@@ -362,7 +362,7 @@
                         </div>
                     </div> <!-- form-group // -->
                     <div class="form-group">
-                    <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Stores @else @lang('messages.Stores') @endif </label>
+                        <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Stores @else @lang('messages.Stores') @endif </label>
                         <select name ="store_id" class="form-select form-select-lg">
                             @foreach($allStores as $store)
                                 <option value="{{$store->id}}">{{$store->name}}</option>
@@ -370,7 +370,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                    <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Categoryes @else @lang('messages.Categoryes') @endif </label>
+                        <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Categoryes @else @lang('messages.Categoryes') @endif </label>
                         <select name="category_id" class="form-select form-select-lg">
                             <option selected value="{{$singleCategory->id}}">with out category</option>
                             @foreach($allCategory as $category)
@@ -380,7 +380,8 @@
                             @endforeach
                         </select>
                     </div>
-                    <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Sub Categoryes @else @lang('messages.Sub Categoryes') @endif </label>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Sub Categoryes @else @lang('messages.Sub Categoryes') @endif </label>
                         <select name="sub_category_id" class="form-select form-select-lg">
                             @foreach($allSubCategory as $subCategory)
                                 @if($subCategory->status == '001')
@@ -391,6 +392,18 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Child Sub Categories @else @lang('messages.Child Sub Categories') @endif </label>
+                        <select name="child_sub_category_id" class="form-select form-select-lg">
+                            @foreach($allChildSubCategory as $childSubCategory)
+                                @if($childSubCategory->status == '001')
+                                    <option selected value="{{$childSubCategory->id}}">{{$childSubCategory->title}}</option>
+                                @else
+                                    <option value="{{$childSubCategory->id}}">{{$childSubCategory->title}}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-9">
                         <button type="submit" class="btn btn-primary">@if(session()->get('locale') == "en") Send @else @lang('messages.Send') @endif</button>

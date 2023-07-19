@@ -536,7 +536,7 @@ class AdminGlobalCreateOrAddSectionController extends BaseController
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+           return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
         $image = array();
         $bigStore = BigStores::where('id',$request->big_store_id)->first();
@@ -593,6 +593,43 @@ class AdminGlobalCreateOrAddSectionController extends BaseController
                     'name' => $image_full_name,
                     'path' => $uploade_path,
                     'sub_category_id' => $request->sub_category_id,
+                    'updated_at' => now(),
+                    'created_at' => now(),
+                ]);
+            }
+        }
+
+        return redirect()->back();
+    }
+
+     public function addPhotosByNameOfChildSubCategory(Request $request)
+    {
+        $rules = [
+            'child_sub_category_id' => 'required',
+            'image.*' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+        }
+        $image = array();
+        $childSubCategory = ChildSubCategory::where('id',$request->child_sub_category_id)->first();
+        if($file = $request->file('image')){
+            foreach($file as $file){
+                $image_name = md5(rand(1000,10000));
+                $ext = strtolower($file->getClientOriginalExtension());
+                $image_full_name = $image_name.'.'.$ext;
+                if (!File::exists('Child_sub_category_images'.'/'.$childSubCategory['photoFileName'])) {
+                    File::makeDirectory('Child_sub_category_images'.'/'.$childSubCategory['photoFileName']);
+                }
+                $uploade_path = public_path('Child_sub_category_images'.'/'.$childSubCategory['photoFileName']);
+                $image_url = $uploade_path.$image_full_name;
+                $file->move($uploade_path,$image_full_name);
+                $image[] = $image_url;
+                ChildSubCategoryPhotos::create([
+                    'name' => $image_full_name,
+                    'path' => $uploade_path,
+                    'child_sub_category_id' => $request->child_sub_category_id,
                     'updated_at' => now(),
                     'created_at' => now(),
                 ]);
@@ -682,6 +719,27 @@ class AdminGlobalCreateOrAddSectionController extends BaseController
             'banner' => null
         ]);
         $setBanner = SubCategoryPhotos::where('id',$request['photo_id'])->update([
+            'banner' => $request['banner']
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function setBannerChildSubCategoryPhoto(Request $request)
+    {
+        $rules = [
+            'photo_id' => 'required',
+            'banner' => 'required',
+            'child_sub_category_id' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return redirect()->back()->with(array('errors' => $validator->getMessageBag()->toArray()));
+        }
+        ChildSubCategoryPhotos::where('child_sub_category_id',$request['child_sub_category_id'])->update([
+            'banner' => null
+        ]);
+        ChildSubCategoryPhotos::where('id',$request['photo_id'])->update([
             'banner' => $request['banner']
         ]);
 

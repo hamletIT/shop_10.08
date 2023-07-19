@@ -134,26 +134,28 @@ class ApiProductController extends BaseController
     *     @OA\Parameter(
     *        name="store_id",
     *        in="query",
-    *        description="Provide product store ID",
+    *        description="Provide product store ID or provide 1 for create default one",
     *        required=true,
     *        allowEmptyValue=true,
     *     ),
     *     @OA\Parameter(
     *        name="category_id",
     *        in="query",
-    *        description="provide category ID",
+    *        description="provide category ID or provide 1 for create default one",
+    *        required=true,
     *        allowEmptyValue=true,
     *     ),
     *     @OA\Parameter(
     *        name="sub_category_id",
     *        in="query",
-    *        description="provide category ID or let empty",
+    *        description="provide category ID or let empty or provide 1 for create default one",
+    *        required=true,
     *        allowEmptyValue=true,
     *     ),
     *     @OA\Parameter(
-    *        name="user_id",
+    *        name="child_sub_category_id",
     *        in="query",
-    *        description="Provide product user ID",
+    *        description="Provide product child sub category ID or let empty or provide 1 for create default one",
     *        required=true,
     *        allowEmptyValue=true,
     *     ),
@@ -224,7 +226,7 @@ class ApiProductController extends BaseController
             'updated_at' => now(),
             'created_at' => now(),
         ]);
-        $price = Prices::insertGetId([
+        Prices::insertGetId([
             'product_id' => $product,
             'title' => $request['name'],
             'productPrice' => $request['price'],
@@ -232,7 +234,7 @@ class ApiProductController extends BaseController
             'updated_at' => now(),
             'created_at' => now(),
         ]);
-        $pivotCategoryProduct = pivot_categories_products::create([
+        pivot_categories_products::create([
             'category_id' => $request['category_id'],
             'product_id' => $product,
             'updated_at' => now(),
@@ -240,9 +242,19 @@ class ApiProductController extends BaseController
         ]);
         if(isset($request->sub_category_id) && $request->sub_category_id !== 'null')
         {
-            $pivotSubCategoryProduct = pivot_sub_categories_products::insertGetId([
+            pivot_sub_categories_products::insertGetId([
                 'sub_category_id' => $request->sub_category_id,
                 'category_id' => $request['category_id'],
+                'product_id' => $product,
+                'updated_at' => now(),
+                'created_at' => now(),
+            ]);
+        }
+        if(isset($request->child_sub_category_id) && $request->child_sub_category_id !== 'null')
+        {
+            pivot_child_sub_categories::insertGetId([
+                'sub_category_id' => $request->sub_category_id,
+                'child_sub_category_id' => $request['child_sub_category_id'],
                 'product_id' => $product,
                 'updated_at' => now(),
                 'created_at' => now(),
@@ -271,21 +283,23 @@ class ApiProductController extends BaseController
                 ]);
             }
         }
-        $category = Category::with(
-            [
-            'categoryImages',
-            'subCategory',
-            'subCategory.subCategoryImages',
-            'subCategory.products',
-            'subCategory.products.store',
-            'subCategory.products.productPrice',
-            'subCategory.products.productImages',
-            'subCategory.products.productOptions',
-            'subCategory.products.productOptions.optionImages'
-            ]
-        )->get();
 
-        return response()->json(['category' => $category]);
+        return response()->json(['category' => BigStores::with(
+            [
+            'bigStoreImages',
+            'categories',
+            'categories.categoryImages',
+            'categories.categories',
+            'categories.categories.subCategoryImages',
+            'categories.categories.categories.ChildsubCategoryImages',
+            'categories.categories.categories.products',
+            'categories.categories.categories.products.store',
+            'categories.categories.categories.products.productPrice',
+            'categories.categories.categories.products.productImages',
+            'categories.categories.categories.products.productOptions',
+            'categories.categories.categories.products.productOptions.optionImages'
+            ]
+        )->get()]);
     }
 
     /** 
@@ -349,13 +363,16 @@ class ApiProductController extends BaseController
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
 
-        $product = Products::where('id',$request->product_id)->where('productNumber',$request->productNumber)->first();
+        $product = Products::where('id',$request->product_id)->where('productNumber',$request->productNumber)->with(['productPrice','productImages','productOptions','productOptions.optionImages'])->first();
         if ($product == null) {
             return response()->json(['status'=>'No data found for these {id:'.$request->id.', code:'.$request->productNumber.'']);
         } else {
             $input = $request->all();
             $product->update($input);
-        
+           
+            Prices::where('product_id',$product->id)->update([
+                'productPrice'=>$request['price'],
+            ]);
             if ($product) {
                 return response()->json(['updated'=>$product,'update status'=>true]);
             } else {
@@ -613,10 +630,7 @@ class ApiProductController extends BaseController
             }
         }
 
-        $product = Products::where('id',$request->product_id)->with(['productPrice','productImages','productOptions','productOptions.optionImages'])->first();
-
-        return response()->json(['product'=>$product]);
-        
+        return response()->json(['product'=>Products::where('id',$request->product_id)->with(['productPrice','productImages','productOptions','productOptions.optionImages'])->first()]);
     }
 
     /**
@@ -712,7 +726,7 @@ class ApiProductController extends BaseController
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
        
-        $products = Products::where('store_id',$request['store_id'])->with(['productPrice','productImages','productOptions','productOptions.optionImages'])->get();
+        $products = Products::where('store_id',$request['store_id'])->with(['store','productPrice','productImages','productOptions','productOptions.optionImages'])->get();
         
         return response()->json(['products' => $products]);
     
@@ -748,9 +762,7 @@ class ApiProductController extends BaseController
     */
     public function getPhotosAndProducts(Request $request)
     {
-        $products = Products::with(['productPrice','productImages','productOptions','productOptions.optionImages'])->get();
-    
-        return response()->json(['products' => $products]);
+        return response()->json(['products' => Products::with(['productPrice','productImages','productOptions','productOptions.optionImages'])->get()]);
     }
 
     // /**
@@ -885,20 +897,21 @@ class ApiProductController extends BaseController
     */
     public function getProductList(Request $request)
     {
-        $category = Category::with(
+        return response()->json(['category' => BigStores::with(
             [
-            'categoryImages',
-            'subCategory',
-            'subCategory.subCategoryImages',
-            'subCategory.products',
-            'subCategory.products.store',
-            'subCategory.products.productPrice',
-            'subCategory.products.productImages',
-            'subCategory.products.productOptions',
-            'subCategory.products.productOptions.optionImages'
+            'bigStoreImages',
+            'categories',
+            'categories.categoryImages',
+            'categories.categories',
+            'categories.categories.subCategoryImages',
+            'categories.categories.categories.ChildsubCategoryImages',
+            'categories.categories.categories.products',
+            'categories.categories.categories.products.store',
+            'categories.categories.categories.products.productPrice',
+            'categories.categories.categories.products.productImages',
+            'categories.categories.categories.products.productOptions',
+            'categories.categories.categories.products.productOptions.optionImages'
             ]
-        )->get();
-       
-        return response()->json(['category' => $category]);
+        )->get()]);
     }
 }

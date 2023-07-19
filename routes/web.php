@@ -27,6 +27,8 @@ Route::get('/', function () {
 Route::prefix('admin')->group(function() {
 
     // -----------------------------------CREATE OR ADD SECTION-----------------------------------------------------------------\\
+    Route::post('/add/photos/for_childSubCategory',[AdminGlobalCreateOrAddSectionController::class,'addPhotosByNameOfChildSubCategory'])->name('add.child_sub_category_photos');
+    Route::post('/set/banner/childSubCategory/photo',[AdminGlobalCreateOrAddSectionController::class,'setBannerChildSubCategoryPhoto'])->name('set.childSubCategory.banner');
     Route::post('/add/photos/for_subCategory',[AdminGlobalCreateOrAddSectionController::class,'addPhotosByNameOfSubCategory'])->name('add.sub_category_photos');
     Route::post('/set/banner/subCategory/photo',[AdminGlobalCreateOrAddSectionController::class,'setBannerSubCategoryPhoto'])->name('set.subCategory.banner');
     Route::post('/add/photos/for_category',[AdminGlobalCreateOrAddSectionController::class,'addPhotosByNameOfCategory'])->name('add.category_photos');
@@ -51,14 +53,15 @@ Route::prefix('admin')->group(function() {
     Route::post('/update-Category',[AdminGlobalUpdateSectionController::class,'updateCategory'])->name('category.update');
     
     // -----------------------------------DELETE SECTION-----------------------------------------------------------------\\
+    Route::post('/delete/childSubCategory/photo',[AdminGlobalDeleteSectionController::class,'deleteChildSubCategoryPhoto'])->name('delete.childSubCategory.photo');
     Route::post('/delete/subCategory/photo',[AdminGlobalDeleteSectionController::class,'deleteSubCategoryPhoto'])->name('delete.subCategory.photo');
     Route::post('/delete/category/photo',[AdminGlobalDeleteSectionController::class,'deleteCategoryPhoto'])->name('delete.category.photo');
     Route::post('/delete/bigstore/photo',[AdminGlobalDeleteSectionController::class,'deleteBigstorePhoto'])->name('delete.bigstore.photo');
     Route::post('/delete/option/photo',[AdminGlobalDeleteSectionController::class,'deleteOptionPhoto'])->name('delete.option.photo');
     Route::post('/delete/sub/category',[AdminGlobalDeleteSectionController::class,'deleteSubCategory'])->name('delete.subCategory');
+    Route::post('/delete/product/by/ID',[AdminGlobalDeleteSectionController::class,'deleteProductByID'])->name('delete.product');
     Route::post('/delete/category',[AdminGlobalDeleteSectionController::class,'deleteCategory'])->name('delete.category');  
     Route::post('/delete/photo',[AdminGlobalDeleteSectionController::class,'deletePhoto'])->name('delete.photo');
-    Route::post('/delete/product/by/ID',[AdminGlobalDeleteSectionController::class,'deleteProductByID'])->name('delete.product');
 
     // -----------------------------------SHOW SECTION-----------------------------------------------------------------\\
     Route::get('/show/child/sub-category',[AdminGlobalShowSectionController::class,'showChildSubCategory'])->name('admin.childsubCategory');

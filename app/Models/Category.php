@@ -18,7 +18,7 @@ class Category extends Model
         'title',
     ];
 
-    public function subCategory() 
+    public function categories() 
     {
         return $this->belongsToMany(SubCategory::class, 'pivot_sub_categories_products', 'category_id', 'sub_category_id');
     }

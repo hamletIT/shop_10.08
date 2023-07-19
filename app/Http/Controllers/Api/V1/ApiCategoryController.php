@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\BigStores;
+use App\Models\BigStorePhotos;
 use App\Models\User;
 use App\Models\Carts;
 use App\Models\Products;
@@ -74,6 +76,7 @@ class ApiCategoryController extends BaseController
         $rules = [
             'title'=>'required|unique:categories,title',
             'photoFileName' => 'required|unique:categories,photoFileName',
+            'big_store_id' => 'required',
         ];
         $validator = Validator::make($request->all(), $rules);
 
@@ -82,6 +85,7 @@ class ApiCategoryController extends BaseController
         }
 
         $category = Category::insertGetId([
+            'big_store_id' => $request['big_store_id'],
             'title' => $request['title'],
             'status' => 'active',
             'rating' => 0,
@@ -114,9 +118,7 @@ class ApiCategoryController extends BaseController
             }
         }
 
-        $categories = Category::with(['categoryImages'])->get();
-
-        return response()->json(['categories'=>$categories]);
+        return response()->json(['categories'=>Category::with(['categoryImages'])->get()]);
     }
 
     /** 
@@ -182,9 +184,7 @@ class ApiCategoryController extends BaseController
             'title' => $request['title']
         ]);
 
-        $categories = Category::with(['categoryImages'])->get();
-
-        return response()->json(['categories'=>$categories]);
+        return response()->json(['categories'=>Category::where('id',$request['category_id'])->with(['categoryImages'])->get()]);
     }
 
     /** 
@@ -248,9 +248,7 @@ class ApiCategoryController extends BaseController
 
         $category = Category::where('id',$request['category_id'])->delete();
            
-        $categories = Category::with(['categoryImages'])->get();
-
-        return response()->json(['categories'=>$categories]);
+        return response()->json(['categories'=>Category::with(['categoryImages'])->get()]);
     }
 
     /** 
@@ -302,14 +300,15 @@ class ApiCategoryController extends BaseController
         $category = Category::Where('title', 'LIKE', '%'.$request['title'].'%')->with(
             [
             'categoryImages',
-            'subCategory',
-            'subCategory.subCategoryImages',
-            'subCategory.products',
-            'subCategory.products.store',
-            'subCategory.products.productPrice',
-            'subCategory.products.productImages',
-            'subCategory.products.productOptions',
-            'subCategory.products.productOptions.optionImages'
+            'categories.categories',
+            'categories.categories.subCategoryImages',
+            'categories.categories.categories.ChildsubCategoryImages',
+            'categories.categories.categories.products',
+            'categories.categories.categories.products.store',
+            'categories.categories.categories.products.productPrice',
+            'categories.categories.categories.products.productImages',
+            'categories.categories.categories.products.productOptions',
+            'categories.categories.categories.products.productOptions.optionImages'
             ]
         )->get();
 
@@ -346,22 +345,27 @@ class ApiCategoryController extends BaseController
      */
     public function getCategories(Request $request)
     {
-        $category = Category::with(
+        $category = BigStores::with(
             [
-            'categoryImages',
-            'products',
-            'products.store',
-            'products.productPrice',
-            'products.productImages',
-            'products.productOptions',
-            'products.productOptions.optionImages'
+            'bigStoreImages',
+            'categories',
+            'categories.categoryImages',
+            'categories.categories',
+            'categories.categories.subCategoryImages',
+            'categories.categories.categories.ChildsubCategoryImages',
+            'categories.categories.categories.products',
+            'categories.categories.categories.products.store',
+            'categories.categories.categories.products.productPrice',
+            'categories.categories.categories.products.productImages',
+            'categories.categories.categories.products.productOptions',
+            'categories.categories.categories.products.productOptions.optionImages'
             ]
         )->get();
 
         return response()->json(['category' => $category]);
     }
 
-     /** 
+    /** 
      * @OA\Get(
      *     path="/api/get/catagories/with/sub/catagories",
      *     summary="Request which returns catagories with sub categories",

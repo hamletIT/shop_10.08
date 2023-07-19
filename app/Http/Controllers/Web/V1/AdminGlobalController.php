@@ -70,7 +70,6 @@ class AdminGlobalController extends BaseController
         //     'categories.categories.subCategoryImages',
         //     'categories.categories.categories.ChildsubCategoryImages',
         //     'categories.categories.categories.products',
-        //     'categories.categories.categories.products',
         //     'categories.categories.categories.products.store',
         //     'categories.categories.categories.products.productPrice',
         //     'categories.categories.categories.products.productImages',

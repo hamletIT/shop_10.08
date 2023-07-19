@@ -135,20 +135,6 @@ class ApiRegisterController extends BaseController
 
         $token = $user->createToken('Token Name')->accessToken;
 
-        // $category = Category::with(
-        //     [
-        //     'categoryImages',
-        //     'subCategory',
-        //     'subCategory.subCategoryImages',
-        //     'subCategory.products',
-        //     'subCategory.products.store',
-        //     'subCategory.products.productPrice',
-        //     'subCategory.products.productImages',
-        //     'subCategory.products.productOptions',
-        //     'subCategory.products.productOptions.optionImages'
-        //     ]
-        // )->get();
-
         return response()->json(['sms_params'=>$send->getBody()->getContents(),'token'=>$token]);
     }
 
@@ -191,8 +177,6 @@ class ApiRegisterController extends BaseController
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
         ]);
-
-        
 
         return response()->json(['param'=>$send->getBody()->getContents(),'comment'=>' Where:<phone> phone number to which you should make a call within 15 minutes to confirm your phone number.<all_phones> list of all possible phone numbers, one of which used the system to call the subscriber (depending on the country).']);
     }
@@ -265,21 +249,6 @@ class ApiRegisterController extends BaseController
             'status'=>1
         ]);
         if ($user) {
-
-        // $category = Category::with(
-        //     [
-        //     'categoryImages',
-        //     'subCategory',
-        //     'subCategory.subCategoryImages',
-        //     'subCategory.products',
-        //     'subCategory.products.store',
-        //     'subCategory.products.productPrice',
-        //     'subCategory.products.productImages',
-        //     'subCategory.products.productOptions',
-        //     'subCategory.products.productOptions.optionImages'
-        //     ]
-        // )->get();
-
             return response()->json(['user'=>User::where('id',$input['id'])->first()]);
         } else {
             return response()->json(['user' => 'No data found']);
@@ -339,20 +308,6 @@ class ApiRegisterController extends BaseController
 
         $user = User::where('email', $request['email'])->firstOrFail();
         $token = $user->createToken('Token Name')->accessToken;
-
-        // $category = Category::with(
-        //     [
-        //     'categoryImages',
-        //     'subCategory',
-        //     'subCategory.subCategoryImages',
-        //     'subCategory.products',
-        //     'subCategory.products.store',
-        //     'subCategory.products.productPrice',
-        //     'subCategory.products.productImages',
-        //     'subCategory.products.productOptions',
-        //     'subCategory.products.productOptions.optionImages'
-        //     ]
-        // )->get();
        
         return response()->json(['token' => $token,'user' => $user]);
     }

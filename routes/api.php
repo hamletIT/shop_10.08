@@ -13,7 +13,8 @@ use App\Http\Controllers\Api\V1\ApiPaymentController;
 use App\Http\Controllers\Api\V1\ApiApplicationsController;
 use App\Http\Controllers\Api\V1\ApiCategoryController;
 use App\Http\Controllers\Api\V1\ApiSubCategoryController;
-
+use App\Http\Controllers\Api\V1\ApiBigStoreController;
+use App\Http\Controllers\Api\V1\ApiChildSubCategoryController;
 
 
 /*
@@ -39,14 +40,25 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/register/sms',[ApiRegisterController::class,'registerBySMS']);
 Route::post('/register/call',[ApiRegisterController::class,'registerByCall']);
 Route::post('/accept/register/code',[ApiRegisterController::class,'acceptRegisterCode']);
-
 Route::post('/login',[ApiRegisterController::class,'login']);
-
 Route::post('/create/applications',[ApiApplicationsController::class,'createApplications']);
-Route::post('/delete/applications',[ApiApplicationsController::class,'deleteByIDApplications']);
 Route::get('/get/applications',[ApiApplicationsController::class,'getApplications']);
+Route::get('/get/all/option',[ApiOptionController::class,'getOptions']);
+Route::get('/get/option',[ApiOptionController::class,'getOption']);
+Route::get('/get/store',[ApiStoreController::class,'getStore']);
+Route::get('/get/all/store',[ApiStoreController::class,'getAllStores']);
+Route::get('/get/all/orders',[ApiOrderController::class,'getAllOrders']);
+Route::get('/get/order',[ApiOrderController::class,'getOrder']);
+Route::get('/filter/order',[ApiOrderController::class,'filterOrder']);
+Route::get('/get/bigStores',[ApiBigStoreController::class,'getBigStores']);
+Route::get('/get/bigStore',[ApiBigStoreController::class,'getBigStore']);
+Route::get('/get/child/sub/categories',[ApiChildSubCategoryController::class,'getChildSubCategories']);
+Route::get('/get/child/sub/category',[ApiChildSubCategoryController::class,'getChildSubCategory']);
+
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/delete/applications',[ApiApplicationsController::class,'deleteByIDApplications']);
+
     Route::post('/logout', [ApiRegisterController::class, 'logout']);
     // cart section
     Route::post('/add/toCart',[ApiCartController::class,'addToCart']);
@@ -64,45 +76,46 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     
     // option section
     Route::post('/create/option',[ApiOptionController::class,'createOptionsForProduct']);
-    Route::get('/get/all/option',[ApiOptionController::class,'getOptions']);
-    Route::get('/get/option',[ApiOptionController::class,'getOption']);
 
     // store section
     Route::post('/create/store',[ApiStoreController::class,'createStore']);
-    Route::get('/get/store',[ApiStoreController::class,'getStore']);
-    Route::get('/get/all/store',[ApiStoreController::class,'getAllStores']);
     Route::post('/delete/store',[ApiStoreController::class,'deleteStore']);
 
     // order section
-    Route::post('/create/order',[ApiOrderController::class,'createOrder']);
-    Route::get('/get/all/orders',[ApiOrderController::class,'getAllOrders']);
-    Route::get('/get/order',[ApiOrderController::class,'getOrder']);
     Route::post('/delete/order',[ApiOrderController::class,'deleteOrder']);
-    Route::get('/filter/order',[ApiOrderController::class,'filterOrder']);
+    Route::post('/create/order',[ApiOrderController::class,'createOrder']);
 
     // category section
     Route::post('/create/category',[ApiCategoryController::class,'createCategory']);
     Route::post('/update/category',[ApiCategoryController::class,'updateCategory']);
     Route::post('/delete/category',[ApiCategoryController::class,'deleteCategory']);
+
+    // Sub category section
+    Route::post('/create/sub/category',[ApiSubCategoryController::class,'createSubCategory']);
+    Route::post('/update/sub/category',[ApiSubCategoryController::class,'updateSubCategory']);
+    Route::post('/delete/sub/category',[ApiSubCategoryController::class,'deleteSubCategory']);
+
+    // big store section
+    Route::post('/add-Big-Store',[ApiBigStoreController::class,'addBigStore']);
+    Route::post('/add/photos/for_BigStore',[ApiBigStoreController::class,'addPhotosByNameOfBigStore']);
+    Route::post('/delete/bigstore/photo',[ApiBigStoreController::class,'deleteBigstorePhoto']);
+
+    // child sub category section
+    Route::post('/add-ChildSubCategory',[ApiChildSubCategoryController::class,'addChildSubCategory']);
+    Route::post('/add/photos/for_childSubCategory',[ApiChildSubCategoryController::class,'addPhotosByNameOfChildSubCategory']);
+    Route::post('/delete/childSubCategory/photo',[ApiChildSubCategoryController::class,'deleteChildSubCategoryPhoto']);
+    Route::post('/update-Child-SubCategory',[ApiChildSubCategoryController::class,'updateChildSubCategory']);
 });
 
 Route::get('get/store/products',[ApiProductController::class,'getstoreProducts']);
-
-Route::post('/create/sub/category',[ApiSubCategoryController::class,'createSubCategory']);
-Route::post('/update/sub/category',[ApiSubCategoryController::class,'updateSubCategory']);
-Route::post('/delete/sub/category',[ApiSubCategoryController::class,'deleteSubCategory']);
 Route::get('/filter/sub/catagory/byTitle',[ApiSubCategoryController::class,'filterSubCategoryByTitle']);
-
 Route::get('/get/catagories',[ApiCategoryController::class,'getCategories']);
 Route::get('/get/catagories/with/sub/catagories',[ApiCategoryController::class,'getCategoriesWithSubCategories']);
 Route::get('/get/sub/catagories',[ApiSubCategoryController::class,'getSubCategories']);
-
 Route::get('/get/all/stores/unAuth',[ApiStoreController::class,'getAllStoreUnAuth']);
 Route::get('/get/single/store/unAuth',[ApiStoreController::class,'getSingleStoreUnAuth']);
-
 Route::get('/get/product/list',[ApiProductController::class,'getProductList']);
 Route::get('/filter/catagory/byTitle',[ApiCategoryController::class,'filterCategoryByTitle']);
-
 Route::get('get/single/product/andphotos',[ApiProductController::class,'getSingleProductAndPhotos']);
 Route::get('get/photosAnd/products',[ApiProductController::class,'getPhotosAndProducts']);
 Route::get('get/single/photosAnd/products',[ApiProductController::class,'getSingleStorePhotosAndProducts']);

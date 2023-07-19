@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Web\V1;
 
-use App\Models\BigStorePhotos;
-use App\Models\BigStores;
 use Illuminate\Support\Facades\Validator;
+use App\Models\BigStores;
+use App\Models\BigStorePhotos;
 use App\Models\Products;
 use App\Models\Options;
 use App\Models\Photos;
@@ -19,6 +19,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use App\Http\Services\VarableServices;
+use Illuminate\Support\Facades\File;
 use Illuminate\Routing\Controller as BaseController;
 
 class AdminGlobalDeleteSectionController extends BaseController
@@ -49,6 +50,24 @@ class AdminGlobalDeleteSectionController extends BaseController
         return response()->json(['deleted'=>true]);
     }
 
+    public function deleteChildSubCategoryPhoto(Request $request)
+    {
+        $rules = [
+            'child_sub_category_id' => 'required',
+            'sub_cat_poto_name' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+        }
+        $childSubCategory = ChildSubCategory::where('id',$request->child_sub_category_id)->first();
+        $photo = ChildSubCategoryPhotos::where('child_sub_category_id',$childSubCategory->id)->where('name',$request['sub_cat_poto_name'])->first();
+        unlink($photo['path'].'/'.$photo['name']);
+        $photo->delete();
+
+        return response()->json(['deleted'=>true]);
+    }
+
     public function deleteCategoryPhoto(Request $request)
     {
         $rules = [
@@ -68,7 +87,7 @@ class AdminGlobalDeleteSectionController extends BaseController
         return response()->json(['deleted'=>true]);
     }
 
-    public function deleteBigstorePhoto(Request $request)
+     public function deleteBigstorePhoto(Request $request)
     {
         $rules = [
             'big_store_id' => 'required',
@@ -183,8 +202,6 @@ class AdminGlobalDeleteSectionController extends BaseController
 
         $product->delete();
 
-       
-        
         return view('admin.dashboard')->with($this->varableServices->getdashboardVarables());
     }
 }

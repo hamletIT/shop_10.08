@@ -578,7 +578,6 @@
                     </div>
                 </div>
             
-                <!-- //-----------------------00 -->
                 <div class="container-fluid">
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">@if(session()->get('locale') == "en") Big Store Table @else @lang('messages.Big Store Table') @endif</h1>
@@ -627,11 +626,10 @@
                                                     @foreach($val->bigStoreImages as $item)
                                                         <td class="d-flex flex-row">
                                                             <div>
-                                                            <p class="del_photo_bigStore">
-                                                                x
+                                                            <button type="button" class="btn btn-danger del_photo_bigStore">X
                                                                 <input class="big_store_id" value='{{$val->id}}' type="hidden">
                                                                 <input class="cat_poto_name" value='{{$item->name}}' type="hidden">
-                                                            </p>
+                                                            </button>
                                                                <img width="70px" height="50px" src="{{ asset('Big_Store_images'.'/'.$val->photoFileName.'/'.$item->name) }}" alt=""> 
                                                             </div>
                                                             <div>
@@ -669,7 +667,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 <div class="container-fluid">
                     <!-- Page Heading -->
@@ -720,11 +717,10 @@
                                                     @foreach($val->categoryImages as $item)
                                                         <td class="d-flex flex-row">
                                                             <div>
-                                                            <p class="del_photo_category">
-                                                                x
+                                                            <button type="button" class="btn btn-danger del_photo_category">X
                                                                 <input class="category_id" value='{{$val->id}}' type="hidden">
                                                                 <input class="cat_poto_name" value='{{$item->name}}' type="hidden">
-                                                            </p>
+                                                            </button>
                                                                <img width="70px" height="50px" src="{{ asset('Category_images'.'/'.$val->photoFileName.'/'.$item->name) }}" alt=""> 
                                                             </div>
                                                             <div>
@@ -812,11 +808,10 @@
                                                     @foreach($val->subCategoryImages as $item)
                                                         <td class="d-flex flex-row">
                                                             <div>
-                                                            <p class="del_photo_sub_category">
-                                                                x
+                                                            <button type="button" class="btn btn-danger del_photo_sub_category">X
                                                                 <input class="sub_category_id" value='{{$val->id}}' type="hidden">
                                                                 <input class="sub_cat_poto_name" value='{{$item->name}}' type="hidden">
-                                                            </p>
+                                                            </button>
                                                                 <img width="70px" height="50px" src="{{ asset('Sub_category_images'.'/'.$val->photoFileName.'/'.$item->name) }}" alt="">
                                                             </div>
                                                        
@@ -843,6 +838,99 @@
                                                         @csrf
                                                             <input type="file" name="image[]" multiple="multiple" class="form-control" id="customFile_ajax" />
                                                             <input type="hidden" value="{{$val->id}}" name="sub_category_id" multiple="multiple" class="form-control" id="customFile_ajax" />
+                                                            <button type="submit" class="btn btn-primary">@if(session()->get('locale') == "en") Send @else @lang('messages.Send') @endif</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- -------------------- -->
+
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">@if(session()->get('locale') == "en") Child Sub Catagory Table @else @lang('messages.Child Sub Catagory Table') @endif</h1>
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                            <?php
+                                $countProd = count($allChildSubCategory);
+                            ?>
+                            @if(session()->get('locale') == "en") Added Child Sub Category @else @lang('messages.Added Child Sub Category') @endif
+                                {{$countProd}} 
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>@if(session()->get('locale') == "en") title @else @lang('messages.title') @endif</th>
+                                            <th>@if(session()->get('locale') == "en") Number of available products @else @lang('messages.Number of available products') @endif</th>
+                                            <th>@if(session()->get('locale') == "en") action @else @lang('messages.action') @endif</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($allChildSubCategory as $val)
+                                            @if($val->status == '001')
+                                                <tr>
+                                                        <td>{{$val->title}}</td>
+                                                        <?php $product = count($val->products);?>
+                                                        <td>{{$product}}</td>
+                                                        
+                                                </tr>
+                                            @else
+                                                <tr>
+                                                    <td>{{$val->title}}</td>
+                                                    <?php $product = count($val->products);?>
+                                                        <td>{{$product}}</td>
+                                                    <td>
+                                                    <button type="button" class="btn btn-danger del_sub_category">
+                                                    @if(session()->get('locale') == "en") delete @else @lang('messages.delete') @endif
+                                                        <input class="sub_category_id" value='{{$val->id}}' type="hidden">
+                                                    </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    @foreach($val->ChildsubCategoryImages as $item)
+                                                        <td class="d-flex flex-row">
+                                                            <div>
+                                                            <button type="button" class="btn btn-danger del_photo_child_sub_category">X
+                                                                <input class="child_sub_category_id" value='{{$val->id}}' type="hidden">
+                                                                <input class="sub_cat_poto_name" value='{{$item->name}}' type="hidden">
+                                                            </button>
+                                                                <img width="70px" height="50px" src="{{ asset('Child_sub_category_images'.'/'.$val->photoFileName.'/'.$item->name) }}" alt="">
+                                                            </div>
+                                                        <div>
+                                                            <form action="{{ route('set.childSubCategory.banner') }}" method="POST" class="form-horizontal" role="form">
+                                                            @csrf
+                                                                @if($item->banner == 'on')
+                                                                    <input type="checkbox" checked name="banner" class="form-control" />
+                                                                @else
+                                                                    <input type="checkbox" name="banner" class="form-control" />
+                                                                @endif
+                                                                <input type="hidden" value="{{$item->id}}" name="photo_id" class="form-control"/>
+                                                                <input type="hidden" value="{{$val->id}}" name="child_sub_category_id" class="form-control"/>
+                                                                <button type="submit" class="btn btn-primary">@if(session()->get('locale') == "en") Set as banner @else @lang('messages.Set as banner') @endif</button>
+                                                            </form>
+                                                        </div>
+                                                        </td>
+                                                    @endforeach
+                                                </tr>
+
+                                                <tr>
+                                                    <td>
+                                                        <form action="{{ route('add.child_sub_category_photos') }}" method="POST" enctype="multipart/form-data" class="form-horizontal" role="form">
+                                                        @csrf
+                                                            <input type="file" name="image[]" multiple="multiple" class="form-control" id="customFile_ajax" />
+                                                            <input type="hidden" value="{{$val->id}}" name="child_sub_category_id" multiple="multiple" class="form-control" id="customFile_ajax" />
                                                             <button type="submit" class="btn btn-primary">@if(session()->get('locale') == "en") Send @else @lang('messages.Send') @endif</button>
                                                         </form>
                                                     </td>
@@ -1243,6 +1331,21 @@
             type: "POST",
             url:"{{ route('delete.subCategory.photo') }}",
             data:{sub_category_id:sub_category_id,sub_cat_poto_name:sub_cat_poto_name},
+            success:function(data){
+                // console.log(data);
+                location.reload();
+            }
+        });
+    });
+    $(".del_photo_child_sub_category").click(function(){
+        var xbtn = $(this).children();
+        var child_sub_category_id = $($(this).children([0])[0]).val();
+        var sub_cat_poto_name = $($(this).children([1])[1]).val();
+        
+        $.ajax({
+            type: "POST",
+            url:"{{ route('delete.childSubCategory.photo') }}",
+            data:{child_sub_category_id:child_sub_category_id,sub_cat_poto_name:sub_cat_poto_name},
             success:function(data){
                 // console.log(data);
                 location.reload();
