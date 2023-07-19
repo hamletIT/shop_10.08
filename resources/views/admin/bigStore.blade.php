@@ -213,7 +213,7 @@
                         @csrf
                         <p>
                         </p>
-                        <div class="d-flex">
+                        <div class="form-group">
                         <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Select field @else @lang('messages.Select field') @endif</label>
                             <select name ="table_name" class="form-select form-select-lg">
                                 @if(isset($productFilter))
@@ -252,6 +252,7 @@
                             </div>
                         </div>
                     </form>
+
                  
                 </nav>
                 <!-- End of Topbar -->
@@ -307,9 +308,9 @@
                                 </div> 
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-9">
-                                    <a class="btn btn-primary" target="_blank" href="http://127.0.0.1:8000/api/documentation#/Create%20store/0f469761a63d8080fd2b7345f203478b">@if(session()->get('locale') == "en") Try in Swagger @else @lang('messages.Try in Swagger') @endif</a>
+                                    <a class="btn btn-primary" target="_blank" href="https://dstdelivery.sk-its.ru/api/documentation#/Big%20Store%20Section/257b50e2ff9d12d14fd2d6a79e06a83f">@if(session()->get('locale') == "en") Try in Swagger @else @lang('messages.Try in Swagger') @endif</a>
                                     </div>
-                                </div> 
+                                </div>
                             </form>
                             <!-- form-group // -->
                         </div>

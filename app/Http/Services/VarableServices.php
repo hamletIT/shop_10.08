@@ -50,7 +50,7 @@ class VarableServices
         $allSubCategory = SubCategory::with('subCategoryImages')->with('products')->get();
         $allChildSubCategory = ChildSubCategory::with('ChildsubCategoryImages')->with('products')->get();
 
-        return compact('singleCategory','allUsers','allProducts','allStores','alloptions','application','allCategory','allSubCategory','allBigStores');
+        return compact('allBigStores','singleCategory','allUsers','allProducts','allStores','alloptions','application','allCategory','allSubCategory','allChildSubCategory');
     }
 
     /**
@@ -138,9 +138,6 @@ class VarableServices
         }
     }
 
-    /**
-     * this code was copied 
-     */
     public function getStatisticSOfYear()
     {
         $application = Applications::get();

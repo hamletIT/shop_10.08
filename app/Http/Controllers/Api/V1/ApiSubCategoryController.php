@@ -119,16 +119,22 @@ class ApiSubCategoryController extends BaseController
             }
         }
 
-        $allSubCategory = SubCategory::with([
-            'products',
-            'products.store',
-            'products.productPrice',
-            'products.productImages',
-            'products.productOptions',
-            'products.productOptions.optionImages'
-        ])->get();
-
-        return response()->json(['subCategories'=>$allSubCategory]);
+        return response()->json(['subCategories'=>BigStores::with(
+            [
+            'bigStoreImages',
+            'categories',
+            'categories.categoryImages',
+            'categories.categories',
+            'categories.categories.subCategoryImages',
+            'categories.categories.categories.ChildsubCategoryImages',
+            'categories.categories.categories.products',
+            'categories.categories.categories.products.store',
+            'categories.categories.categories.products.productPrice',
+            'categories.categories.categories.products.productImages',
+            'categories.categories.categories.products.productOptions',
+            'categories.categories.categories.products.productOptions.optionImages'
+            ]
+        )->get()]);
     }
 
     /** 
@@ -187,16 +193,22 @@ class ApiSubCategoryController extends BaseController
             'title' => $request['title']
         ]);
 
-        $allSubCategory = SubCategory::with([
-            'products',
-            'products.store',
-            'products.productPrice',
-            'products.productImages',
-            'products.productOptions',
-            'products.productOptions.optionImages'
-        ])->get();
-
-        return response()->json(['subCategories'=>$allSubCategory]);
+        return response()->json(['subCategories'=>BigStores::with(
+            [
+            'bigStoreImages',
+            'categories',
+            'categories.categoryImages',
+            'categories.categories',
+            'categories.categories.subCategoryImages',
+            'categories.categories.categories.ChildsubCategoryImages',
+            'categories.categories.categories.products',
+            'categories.categories.categories.products.store',
+            'categories.categories.categories.products.productPrice',
+            'categories.categories.categories.products.productImages',
+            'categories.categories.categories.products.productOptions',
+            'categories.categories.categories.products.productOptions.optionImages'
+            ]
+        )->get()]);
     }
 
     /** 
@@ -299,12 +311,14 @@ class ApiSubCategoryController extends BaseController
         }
 
         $allSubCategory = SubCategory::Where('title', 'LIKE', '%'.$request['title'].'%')->with([
-            'products',
-            'products.store',
-            'products.productPrice',
-            'products.productImages',
-            'products.productOptions',
-            'products.productOptions.optionImages'
+            'categories',
+            'categories.ChildsubCategoryImages',
+            'categories.products',
+            'categories.products.store',
+            'categories.products.productPrice',
+            'categories.products.productImages',
+            'categories.products.productOptions',
+            'categories.products.productOptions.optionImages'
         ])->get();
 
         return response()->json(['subCategories'=>$allSubCategory]);
@@ -340,16 +354,22 @@ class ApiSubCategoryController extends BaseController
      */
     public function getSubCategories(Request $request)
     {
-        $allSubCategory = SubCategory::with([
-            'products',
-            'products.store',
-            'products.productPrice',
-            'products.productImages',
-            'products.productOptions',
-            'products.productOptions.optionImages'
-        ])->get();
-
-        return response()->json(['subCategories'=>$allSubCategory]);
+        return response()->json(['subCategories'=>BigStores::with(
+            [
+            'bigStoreImages',
+            'categories',
+            'categories.categoryImages',
+            'categories.categories',
+            'categories.categories.subCategoryImages',
+            'categories.categories.categories.ChildsubCategoryImages',
+            'categories.categories.categories.products',
+            'categories.categories.categories.products.store',
+            'categories.categories.categories.products.productPrice',
+            'categories.categories.categories.products.productImages',
+            'categories.categories.categories.products.productOptions',
+            'categories.categories.categories.products.productOptions.optionImages'
+            ]
+        )->get()]);
     }
 }
 

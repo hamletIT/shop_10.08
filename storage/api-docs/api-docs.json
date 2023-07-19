@@ -132,6 +132,198 @@
                 }
             }
         },
+        "/api/get/bigStores": {
+            "get": {
+                "tags": [
+                    "Big Store Section"
+                ],
+                "summary": "Request that get all big stores",
+                "description": "",
+                "operationId": "ae16880ddf3666eb558a387d97703cc0",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "429": {
+                        "description": "validation error"
+                    }
+                }
+            }
+        },
+        "/api/get/bigStore": {
+            "get": {
+                "tags": [
+                    "Big Store Section"
+                ],
+                "summary": "Request that get single big stores",
+                "description": "",
+                "operationId": "d53500b3dd996890989c0d5ccf4e6fa9",
+                "parameters": [
+                    {
+                        "name": "big_store_id",
+                        "in": "query",
+                        "description": "Please write big store id",
+                        "required": true,
+                        "allowEmptyValue": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "429": {
+                        "description": "validation error"
+                    }
+                }
+            }
+        },
+        "/api/add-Big-Store": {
+            "post": {
+                "tags": [
+                    "Big Store Section"
+                ],
+                "summary": "Request that add new Big Store",
+                "description": "",
+                "operationId": "257b50e2ff9d12d14fd2d6a79e06a83f",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Please write a big store name",
+                        "required": true,
+                        "allowEmptyValue": true
+                    },
+                    {
+                        "name": "info",
+                        "in": "query",
+                        "description": "Please write a big store info",
+                        "required": true,
+                        "allowEmptyValue": true
+                    },
+                    {
+                        "name": "photoFileName",
+                        "in": "query",
+                        "description": "Please write a big store Photo File Name",
+                        "required": true,
+                        "allowEmptyValue": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "429": {
+                        "description": "validation error"
+                    }
+                }
+            }
+        },
+        "/api/add/photos/for_BigStore": {
+            "post": {
+                "tags": [
+                    "Big Store Section"
+                ],
+                "summary": "Request that added photos for big store",
+                "description": "",
+                "operationId": "ef8de09ede9528fc8e8e7aeb72f7b0b4",
+                "parameters": [
+                    {
+                        "name": "big_store_id",
+                        "in": "query",
+                        "description": "Please write a big store id",
+                        "required": true,
+                        "allowEmptyValue": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "429": {
+                        "description": "validation error"
+                    }
+                }
+            }
+        },
+        "/api/delete/bigstore/photo": {
+            "post": {
+                "tags": [
+                    "Big Store Section"
+                ],
+                "summary": "Request that delete photo big store",
+                "description": "",
+                "operationId": "304048397c201e99ac9faebba737f2a1",
+                "parameters": [
+                    {
+                        "name": "big_store_id",
+                        "in": "query",
+                        "description": "Please write big store id",
+                        "required": true,
+                        "allowEmptyValue": true
+                    },
+                    {
+                        "name": "cat_poto_name",
+                        "in": "query",
+                        "description": "Please write photo name",
+                        "required": true,
+                        "allowEmptyValue": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "429": {
+                        "description": "validation error"
+                    }
+                }
+            }
+        },
         "/api/add/toCart": {
             "post": {
                 "tags": [
@@ -474,14 +666,50 @@
                 }
             }
         },
-        "/api/get/catagories/with/sub/catagories": {
+        "/api/get/child/sub/category": {
             "get": {
                 "tags": [
-                    "Category Section"
+                    "Child Sub Category Section"
                 ],
-                "summary": "Request which returns catagories with sub categories",
+                "summary": "Request that get single child sub category",
                 "description": "",
-                "operationId": "0878732fa440f6ed18125afd7d024e0d",
+                "operationId": "e8cba7f7fc15fc1178eb5d43c652a61b",
+                "parameters": [
+                    {
+                        "name": "child_sub_category_id",
+                        "in": "query",
+                        "description": "Please write child sub category id",
+                        "required": true,
+                        "allowEmptyValue": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "429": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/get/child/sub/categories": {
+            "get": {
+                "tags": [
+                    "Child Sub Category Section"
+                ],
+                "summary": "Request that get all child sub category",
+                "description": "",
+                "operationId": "bf6e70d3055cc4f65bab13618fecbc3f",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -497,6 +725,171 @@
                     },
                     "429": {
                         "description": "validation error"
+                    }
+                }
+            }
+        },
+        "/api/add-ChildSubCategory": {
+            "post": {
+                "tags": [
+                    "Child Sub Category Section"
+                ],
+                "summary": "Request that add child sub category",
+                "description": "",
+                "operationId": "07c9bb93ed171f2db26d192ae4cef15d",
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Please write category title",
+                        "required": true,
+                        "allowEmptyValue": true
+                    },
+                    {
+                        "name": "photoFileName",
+                        "in": "query",
+                        "description": "Please write category photoFileName",
+                        "required": true,
+                        "allowEmptyValue": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "429": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/add/photos/for_childSubCategory": {
+            "post": {
+                "tags": [
+                    "Child Sub Category Section"
+                ],
+                "summary": "Request that add photos child sub category",
+                "description": "",
+                "operationId": "4d1d4f61a896bdaef9d007b9401f48a9",
+                "parameters": [
+                    {
+                        "name": "child_sub_category_id",
+                        "in": "query",
+                        "description": "Please write child sub category id",
+                        "required": true,
+                        "allowEmptyValue": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "429": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/delete/childSubCategory/photo": {
+            "post": {
+                "tags": [
+                    "Child Sub Category Section"
+                ],
+                "summary": "Request that delete photo child sub category",
+                "description": "",
+                "operationId": "f674352fd984273c5b5d107a66a7666b",
+                "parameters": [
+                    {
+                        "name": "child_sub_category_id",
+                        "in": "query",
+                        "description": "Please write child sub category id",
+                        "required": true,
+                        "allowEmptyValue": true
+                    },
+                    {
+                        "name": "sub_cat_poto_name",
+                        "in": "query",
+                        "description": "Please write photo name",
+                        "required": true,
+                        "allowEmptyValue": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "429": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/update-Child-SubCategory": {
+            "post": {
+                "tags": [
+                    "Child Sub Category Section"
+                ],
+                "summary": "Request that update child sub category",
+                "description": "",
+                "operationId": "0dfb5b3a5856832b92085b576d177b1d",
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Please write title",
+                        "required": true,
+                        "allowEmptyValue": true
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Please write child category id",
+                        "required": true,
+                        "allowEmptyValue": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "429": {
+                        "description": "Validation error"
                     }
                 }
             }
@@ -1079,26 +1472,28 @@
                     {
                         "name": "store_id",
                         "in": "query",
-                        "description": "Provide product store ID",
+                        "description": "Provide product store ID or provide 1 for create default one",
                         "required": true,
                         "allowEmptyValue": true
                     },
                     {
                         "name": "category_id",
                         "in": "query",
-                        "description": "provide category ID",
+                        "description": "provide category ID or provide 1 for create default one",
+                        "required": true,
                         "allowEmptyValue": true
                     },
                     {
                         "name": "sub_category_id",
                         "in": "query",
-                        "description": "provide category ID or let empty",
+                        "description": "provide category ID or let empty or provide 1 for create default one",
+                        "required": true,
                         "allowEmptyValue": true
                     },
                     {
-                        "name": "user_id",
+                        "name": "child_sub_category_id",
                         "in": "query",
-                        "description": "Provide product user ID",
+                        "description": "Provide product child sub category ID or let empty or provide 1 for create default one",
                         "required": true,
                         "allowEmptyValue": true
                     }
