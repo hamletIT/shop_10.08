@@ -30,10 +30,16 @@ use GuzzleHttp\Psr7\Request as Req;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
+use App\Http\Services\ApiVarableServices;
 use Illuminate\Routing\Controller as BaseController;
 
 class ApiCartController extends BaseController
 {
+    public function __construct(
+        public ApiVarableServices $apiVarableServices,
+    ) {
+       
+    }
     /**
     * @OA\Post(
     *     path="/api/add/toCart",
@@ -85,6 +91,8 @@ class ApiCartController extends BaseController
     */
     public function addToCart(Request $request)
     {
+        // return response()->json($request->all());
+
         $option = [
             1 => [
                 "id" => 3, 
@@ -92,7 +100,7 @@ class ApiCartController extends BaseController
             ],
             2 => [
                 "id" => 4, 
-                "qty" => 3
+                "qty" => 2
             ]
         ];
        
@@ -115,7 +123,7 @@ class ApiCartController extends BaseController
        
         foreach($option as $value){
             $valueAsString = json_encode($value);
-            $cart = Carts::insertGetId([
+            Carts::insertGetId([
                 'random_number' => $randomNumberForOption,
                 'status' => $product->status,
                 'sessionStartDate' => Carbon::now(config('app.timezone_now'))->toDateTimeString(),
@@ -128,8 +136,9 @@ class ApiCartController extends BaseController
                 'updated_at' => now(),
             ]);
         }
+        $cartResponse = $this->apiVarableServices->getCart($request->user_id);
 
-        return response()->json(['product'=>Carts::find($cart)]);
+        return response()->json($cartResponse);
     }
 
     /**
@@ -177,36 +186,13 @@ class ApiCartController extends BaseController
         if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
-
-        $cart = Carts::where('user_id',$request->user_id)->get()->groupBy('random_number');
-
-        // return response()->json($cart);
-
-        $randPrcies = [];
-        
-        foreach($cart as $key => $items)
-        {
-            $productTable = Products::with('productPrice')->where('id',$items[0]->product_id)->first(); // 10 , 4
-            $prod_price = $productTable->productPrice[0]->productPrice * $items[0]->totalQty; // 40
-            $randPrice = 0;
-
-            foreach($items as $key => $item)
-            {
-                $option_array_price = json_decode($item->array_options);
-                $option_price = json_decode($option_array_price->id); // 5, 6 * 4
-                $option_qty = json_decode($option_array_price->qty);  
-                $optionTable = Options::where('id',$option_price)->first();
-                $qty_price = $option_qty * $optionTable->price * $items[0]->totalQty; 
-                $randPrice += $qty_price;
-            }
-            $randPrcies['product_id: '.$items[0]->product_id] = $randPrice + $prod_price;
-            $product[$items[0]->product_id] = $items[0];
+        $userIsset = User::find($request->user_id);
+        if ($userIsset == null) {
+            return response()->json(["userCart" => []]);
         }
+        $cartResponse = $this->apiVarableServices->getCart($request->user_id);
 
-        
-        
-        return response()->json(['products'=>$product,'product prices'=>$randPrcies,'Total price:'=>array_sum($randPrcies)]);  
-       
+        return response()->json($cartResponse);
     }
 
     /**
@@ -219,6 +205,13 @@ class ApiCartController extends BaseController
     *        name="product_id",
     *        in="query",
     *        description="Please write product ID",
+    *        required=true,
+    *        allowEmptyValue=true,
+    *     ),
+    *     @OA\Parameter(
+    *        name="user_id",
+    *        in="query",
+    *        description="Please write user ID",
     *        required=true,
     *        allowEmptyValue=true,
     *     ),
@@ -247,34 +240,53 @@ class ApiCartController extends BaseController
     public function deleteCartProducts(Request $request)
     {
         $rules = [
-            'product_id' => 'required',
+            'user_id' => 'required|numeric|integer',
+            'product_id' => 'required|numeric|integer',
         ];
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
-        $userCart = Carts::where('product_id',$request->product_id)->first();
+        $userCart = Carts::where('user_id',$request->user_id)->where('product_id',$request->product_id)->first();
 
         if ($userCart == null) {
-            return response()->json(['status'=>'No data found for these {id:'.$request->product_id.'}']);
+            return response()->json(['cart_products'=>'No data found']);
         } else {
-            $userCart->delete();
-            return response()->json(['deleted'=>true]);
+            Carts::where('user_id',$request->user_id)->where('product_id',$request->product_id)->delete();
+
+            $cartResponse = $this->apiVarableServices->getCart($request->user_id);
+
+            return response()->json($cartResponse);
         }
     }
 
     /**
-    *  @OA\Get(
-    *     path="/api/filter/cart",
-    *     summary="Request that search via product name",
+    *  @OA\Post(
+    *     path="/api/add/quantity/forOne/Product",
+    *     summary="Add Quantity For One Product",
     *     description="",
     *     tags={"Cart Section"},
     *     @OA\Parameter(
-    *        name="name",
+    *        name="product_id",
     *        in="query",
-    *        description="Please write cart name",
+    *        description="Please write product ID",
     *        required=true,
+    *        allowEmptyValue=true,
+    *     ),
+    *     @OA\Parameter(
+    *        name="user_id",
+    *        in="query",
+    *        description="Please write user ID",
+    *        required=true,
+    *        allowEmptyValue=true,
+    *     ),
+    *     @OA\Parameter(
+    *        name="qty",
+    *        in="query",
+    *        description="Please Write quantity How much do you want to add",
+    *        required=true,
+    *        allowEmptyValue=true,
     *     ),
     *     @OA\Response(
     *        response=200,
@@ -298,14 +310,26 @@ class ApiCartController extends BaseController
     *   ),
     * )
     */
-    public function filterCart(Request $request)
+    public function AddQuantityForOneProduct(Request $request)
     {
-        if (!is_null($request['name'])) {
-            $cartFilter = Carts::where('name', 'LIKE', '%'.$request['name'].'%')->with('product')->get();
-          
-            return response()->json(['cart' => $cartFilter]);
-        }
+        $rules = [
+            'user_id' => 'required|numeric|integer',
+            'product_id' => 'required|numeric|integer',
+            'qty' => 'required|numeric|integer',
+        ];
+        $validator = Validator::make($request->all(), $rules);
 
-        return response()->json(['cart' => []]);
+        if ($validator->fails()) {
+            return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+        }
+        $updateCartProductQty = Carts::where('user_id', $request->user_id)->where('product_id', $request->product_id)->update(['totalQty' => $request->qty]);
+
+        if ($updateCartProductQty) {
+            $cartResponse = $this->apiVarableServices->getCart($request->user_id);
+
+            return response()->json($cartResponse);
+        }
+       
+        return response()->json(['update' => 'Failed to update']);
     }
 }

@@ -425,6 +425,13 @@
                         "description": "Please write product ID",
                         "required": true,
                         "allowEmptyValue": true
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "Please write user ID",
+                        "required": true,
+                        "allowEmptyValue": true
                     }
                 ],
                 "responses": {
@@ -446,20 +453,35 @@
                 }
             }
         },
-        "/api/filter/cart": {
-            "get": {
+        "/api/add/quantity/forOne/Product": {
+            "post": {
                 "tags": [
                     "Cart Section"
                 ],
-                "summary": "Request that search via product name",
+                "summary": "Add Quantity For One Product",
                 "description": "",
-                "operationId": "868a499852e6d2c211c9a220ce31ee8d",
+                "operationId": "58a228bce11ba84a2c89a9aa6767c3e7",
                 "parameters": [
                     {
-                        "name": "name",
+                        "name": "product_id",
                         "in": "query",
-                        "description": "Please write cart name",
-                        "required": true
+                        "description": "Please write product ID",
+                        "required": true,
+                        "allowEmptyValue": true
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "Please write user ID",
+                        "required": true,
+                        "allowEmptyValue": true
+                    },
+                    {
+                        "name": "qty",
+                        "in": "query",
+                        "description": "Please Write quantity How much do you want to add",
+                        "required": true,
+                        "allowEmptyValue": true
                     }
                 ],
                 "responses": {
@@ -501,6 +523,13 @@
                         "name": "photoFileName",
                         "in": "query",
                         "description": "Please write a category Photo File Name",
+                        "required": true,
+                        "allowEmptyValue": true
+                    },
+                    {
+                        "name": "big_store_id",
+                        "in": "query",
+                        "description": "Please write a big store id",
                         "required": true,
                         "allowEmptyValue": true
                     }
@@ -647,6 +676,33 @@
                 "summary": "Request which returns categories",
                 "description": "",
                 "operationId": "f2a2808c52a1e6bf77513b76346ca398",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "429": {
+                        "description": "validation error"
+                    }
+                }
+            }
+        },
+        "/api/get/catagories/with/sub/catagories": {
+            "get": {
+                "tags": [
+                    "Category Section"
+                ],
+                "summary": "Request which returns catagories with sub categories",
+                "description": "",
+                "operationId": "0878732fa440f6ed18125afd7d024e0d",
                 "responses": {
                     "200": {
                         "description": "OK",
