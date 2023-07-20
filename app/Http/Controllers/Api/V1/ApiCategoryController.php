@@ -33,10 +33,17 @@ class ApiCategoryController extends BaseController
      *        required=true,
      *        allowEmptyValue=true,
      *     ),
-    *     @OA\Parameter(
+     *     @OA\Parameter(
      *        name="photoFileName",
      *        in="query",
      *        description="Please write a category Photo File Name",
+     *        required=true,
+     *        allowEmptyValue=true,
+     *     ),
+     *     @OA\Parameter(
+     *        name="big_store_id",
+     *        in="query",
+     *        description="Please write a big store id",
      *        required=true,
      *        allowEmptyValue=true,
      *     ),
