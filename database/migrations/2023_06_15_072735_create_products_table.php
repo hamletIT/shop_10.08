@@ -16,6 +16,7 @@ return new class extends Migration
             $table->bigIncrements('id'); 
             $table->string('name');
             $table->string('productNumber');
+            $table->string('rating')->nullable();
             $table->string('color');
             $table->string('type');
             $table->string('description');
@@ -25,7 +26,6 @@ return new class extends Migration
             $table->string('status');
             $table->integer('standardCost');
             $table->integer('listprice');
-            $table->integer('price');
             $table->integer('totalPrice');
             $table->integer('weight');
             $table->integer('totalQty');

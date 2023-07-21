@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('status');
             $table->bigInteger('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->integer('price');
+            $table->string('photoFilePath');
+            $table->string('photoFileName');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrentOnUpdate();
         });

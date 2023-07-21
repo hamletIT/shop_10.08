@@ -8,6 +8,7 @@ use App\Models\Options;
 use App\Models\Category;
 use App\Models\SubCategory;
 use GuzzleHttp\Client;
+use App\Models\Orders;
 use GuzzleHttp\Psr7\Request as Req;
 
 class ApiVarableServices
@@ -200,6 +201,23 @@ class ApiVarableServices
             $product[$items[0]->product_id] = $items[0];
         }
         
-        return ['products'=>$product,'product prices'=>$randPrcies,'Total price:'=>array_sum($randPrcies)];  
+        return ['products'=>$product,'product_prices'=>$randPrcies,'Total_price:'=>array_sum($randPrcies)];  
+    }
+
+    /**
+     * Comment => The function returns single order
+     * @param ?int $userID
+     */
+    public function getOrder($userID)
+    {
+        return [Orders::where('user_id',$userID)->with(['product'])->get()];
+    }
+
+     /**
+     * Comment => The function returns all orders     
+     */
+    public function getOrders()
+    {
+        return [Orders::with(['product'])->get()];
     }
 }

@@ -20,10 +20,16 @@ use GuzzleHttp\Psr7\Request as Req;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
+use App\Http\Services\ApiVarableServices;
 use Illuminate\Routing\Controller as BaseController;
 
 class ApiOrderController extends BaseController
 {
+    public function __construct(
+        public ApiVarableServices $apiVarableServices,
+    ) {
+       
+    }
     /**
     * @OA\Post(
     *     path="/api/create/order",
@@ -34,13 +40,6 @@ class ApiOrderController extends BaseController
     *        name="user_id",
     *        in="query",
     *        description="Please write user ID",
-    *        required=true,
-    *        allowEmptyValue=true,
-    *     ),
-    *     @OA\Parameter(
-    *        name="store_id",
-    *        in="query",
-    *        description="Please write store ID",
     *        required=true,
     *        allowEmptyValue=true,
     *     ),
@@ -68,10 +67,8 @@ class ApiOrderController extends BaseController
     */
     public function createOrder(Request $request)
     {
-       
         $rules = [
             'user_id' => 'required',
-            'store_id' => 'required',
         ];
         $validator = Validator::make($request->all(), $rules);
 
@@ -79,38 +76,37 @@ class ApiOrderController extends BaseController
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
         $user = User::find($request['user_id']);
-        $userCart = Carts::where('user_id',$request->user_id)->get();
-        
-        $ownOrder = Orders::where('user_id',$request->user_id)->get();
-       
-        if (count($ownOrder) == 0) {
-            foreach ($userCart as $key => $value) {
-                $randomNumber = rand(config('app.rand_min'),config('app.rand_max'));
-                
-                $order = Orders::insertGetID([
-                    'product_id' => $value['product_id'] !== null ? $value['product_id'] : null,
-                    'user_id' => $request['user_id'] !== null ? $request['user_id'] : null,
-                    'store_id' => $request['store_id'] !== null ? $request['store_id'] : null,
-                    'method' => $request['method']  !== null ? $request['method'] : null,
-                    'location' => $request['location']  !== null ? $request['location'] :'',
-                    'totalQty' => $value['totalQty'] !== NULL ? $value['totalQty'] : nulL,
-                    'totalPrice' => $value['totalPrice'] !== null ? $value['totalPrice'] : null,
-                    'order_number' => $randomNumber  !== null ? $randomNumber : null,
-                    'payment_status' => null,
-                    'status' => 0,
-                    'order_note' => $request['order_note']  !== null ?  $request['order_note'] : null,
-                    'customer_name' => $user->name,
-                    'customer_email' => $user->email,
-                    'customer_phone' => $user->phone,
-                    'updated_at' => now(),
-                    'created_at' => now(),
-                ]);
+        $userCart = $this->apiVarableServices->getCart($request['user_id']);
+
+        // dd($userCart);
+        if (isset($userCart['products']) && isset($userCart['product_prices']) && is_array($userCart['products']) && is_array($userCart['product_prices'])) {
+            foreach ($userCart['products'] as $cart) {
+                if (isset($cart['product_id'])) {
+                    $randomNumber = rand(config('app.rand_min'), config('app.rand_max'));
+                    
+                    // Get the product price based on the product_id
+                    $productPrice = isset($userCart['product_prices']['product_id: ' . $cart['product_id']]) ? $userCart['product_prices']['product_id: ' . $cart['product_id']] : 0;
+                    Orders::insert([
+                        'user_id' => $request['user_id'],
+                        'product_id' => $cart['product_id'],
+                        'location' => $request['location'] !== null ? $request['location'] : '',
+                        'totalQty' => $cart['totalQty'] !== null ? $cart['totalQty'] : null,
+                        'totalPrice' => $productPrice, // Assign the calculated product price
+                        'order_number' => $randomNumber !== null ? $randomNumber : null,
+                        'status' => 1,
+                        'order_note' => $request['order_note'] !== null ? $request['order_note'] : null,
+                        'customer_name' => $user->name,
+                        'customer_email' => $user->email,
+                        'customer_phone' => $user->phone,
+                        'updated_at' => now(),
+                        'created_at' => now(),
+                    ]);
+                }
             }
 
-            return response()->json(['order'=>Orders::where('user_id',$request['user_id'])->get()]);
-        } else {
-            return response()->json(['order'=>'your order is on hold']);
         }
+
+        return response()->json($this->apiVarableServices->getOrders());
     }
 
     /**
@@ -143,7 +139,7 @@ class ApiOrderController extends BaseController
     */
     public function getAllOrders(Request $request)
     {
-        return response()->json([$allOrders = Orders::with('product','store')->get()]);
+        return response()->json($this->apiVarableServices->getOrders());
     }
 
     /**
@@ -181,7 +177,7 @@ class ApiOrderController extends BaseController
     *   ),
     * )
     */
-    public function getOrder(Request $request)
+    public function getSingleOrder(Request $request)
     {
         $rules = [
             'user_id' => 'required',
@@ -192,7 +188,7 @@ class ApiOrderController extends BaseController
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
         
-        return response()->json(['Orders' => $orders = Orders::where('user_id',$request->user_id)->with('product','store')->get()]);
+        return response()->json($this->apiVarableServices->getOrder($request->user_id));
     }
 
     /**
@@ -241,62 +237,13 @@ class ApiOrderController extends BaseController
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
         
-        $Orders = Orders::where('user_id',$request->user_id)->delete();
-        if($Orders == 1) {
+        $Orders = Orders::where('user_id',$request->user_id)->update([
+            'status' => 0,
+        ]);
+        if($Orders) {
             return response()->json(['status' =>true,'order'=>'found and removed.']);
         }
 
         return response()->json(['status' =>false,'order'=>'not found']);
-    }
-
-    /**
-    * @OA\Get(
-    *     path="/api/filter/order",
-    *     summary="Request that search via order name",
-    *     description="",
-    *     tags={"Order Section"},
-    *     @OA\Parameter(
-    *        name="user_id",
-    *        in="query",
-    *        description="Please write order user Id",
-    *        allowEmptyValue=true,
-    *     ),
-    *     @OA\Parameter(
-    *        name="email",
-    *        in="query",
-    *        description="Please write order user email",
-    *        allowEmptyValue=true,
-    *     ),
-    *     @OA\Response(
-    *        response=200,
-    *        description="OK",
-    *        @OA\MediaType(
-    *            mediaType="application/json",
-    *        )
-    *     ),
-    *     @OA\Response(
-    *         response=401,
-    *         description="Unauthenticated",
-    *     ),
-    *     @OA\Response(
-    *         response=403,
-    *         description="Forbidden"
-    *     ),
-    *     @OA\Response(
-    *         response=429,
-    *         description="validation error"
-    *     )
-    *   ),
-    * )
-    */
-    public function filterOrder(Request $request)
-    {
-        if(!is_null($request['user_id']) || !is_null($request['email']) ) {
-            $orderFilter = Orders::where('user_id',$request->user_id)->orWhere('customer_email', $request['email'])->with('product','store')->get();
-           
-            return response()->json(['order' => $orderFilter]);
-        }
-
-        return response()->json(['order' => []]);
     }
 }

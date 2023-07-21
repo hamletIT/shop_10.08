@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('piov_categories_products', function (Blueprint $table) {
+        Schema::create('pivot_categories_products', function (Blueprint $table) {
             $table->bigIncrements('id');   
             $table->bigInteger('product_id')->unsigned();       
             $table->bigInteger('category_id')->unsigned()->nullable();                 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('piov_categories_products');
+        Schema::dropIfExists('pivot_categories_products');
     }
 };

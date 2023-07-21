@@ -32,6 +32,8 @@ use App\Http\Controllers\Api\V1\ApiChildSubCategoryController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+// Route::post('/create/order',[ApiOrderController::class,'createOrder']); --- for test then delete and comment #2
+// Route::post('/add/toCart',[ApiCartController::class,'addToCart']);  --- for test then delete and comment #3
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // aplication section for authorized users
@@ -44,7 +46,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/add/quantity/forOne/Product',[ApiCartController::class,'AddQuantityForOneProduct']);
     Route::post('/delete/cart/products',[ApiCartController::class,'deleteCartProducts']);
     Route::get('/get/cart/products',[ApiCartController::class,'getCartProducts']);
-    Route::post('/add/toCart',[ApiCartController::class,'addToCart']);
+    Route::post('/add/toCart',[ApiCartController::class,'addToCart']); // --- #3
 
     // product section for authorized users
     Route::post('/delete/photo/product',[ApiProductController::class,'deletePhotoByNameOfProduct']);
@@ -63,7 +65,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // order section for authorized users
     Route::post('/delete/order',[ApiOrderController::class,'deleteOrder']);
-    Route::post('/create/order',[ApiOrderController::class,'createOrder']);
+    Route::post('/create/order',[ApiOrderController::class,'createOrder']);  // --- #3
 
     // category section for authorized users
     Route::post('/create/category',[ApiCategoryController::class,'createCategory']);
@@ -133,8 +135,7 @@ Route::get('/get/payment',[ApiPaymentController::class,'getPayment']);
 
 // order section for unauthorized users
 Route::get('/get/all/orders',[ApiOrderController::class,'getAllOrders']);
-Route::get('/filter/order',[ApiOrderController::class,'filterOrder']);
-Route::get('/get/order',[ApiOrderController::class,'getOrder']);
+Route::get('/get/order',[ApiOrderController::class,'getSingleOrder']);
 
 // big store section for unauthorized users
 Route::get('/get/bigStores',[ApiBigStoreController::class,'getBigStores']);

@@ -93,16 +93,16 @@ class ApiCartController extends BaseController
     {
         // return response()->json($request->all());
 
-        $option = [
-            1 => [
-                "id" => 3, 
-                "qty" => 2 
-            ],
-            2 => [
-                "id" => 4, 
-                "qty" => 2
-            ]
-        ];
+        // $option = [
+        //     1 => [
+        //         "id" => 3, 
+        //         "qty" => 2 
+        //     ],
+        //     2 => [
+        //         "id" => 4, 
+        //         "qty" => 2
+        //     ]
+        // ];
        
         $rules = [
             'user_id' => 'required',
@@ -116,15 +116,21 @@ class ApiCartController extends BaseController
         }
 
         $product = Products::where('id',$request->product_id)->first();
+        $cartProductNumber = Carts::where('product_id',$request->product_id)->first();
         if (is_null($product)) {
             return response()->json(['product'=>'product not found']);
         }
         $randomNumberForOption = rand(config('app.rand_min'),config('app.rand_max'));
        
-        foreach($option as $value){
+        foreach($request->options as $value){
             $valueAsString = json_encode($value);
+            if ($cartProductNumber !== null) {
+               $number = $cartProductNumber->random_number;
+            } else {
+               $number = $randomNumberForOption;
+            }
             Carts::insertGetId([
-                'random_number' => $randomNumberForOption,
+                'random_number' => $number,
                 'status' => $product->status,
                 'sessionStartDate' => Carbon::now(config('app.timezone_now'))->toDateTimeString(),
                 'sessionEndDate' => Carbon::now(config('app.timezone_now'))->addWeeks(1)->toDateTimeString(),

@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use App\Models\User;
 use App\Models\Prices;
+use App\Models\Addresses;
 use App\Models\pivot_child_sub_categories;
 use App\Models\pivot_sub_categories_products;
 use App\Models\pivot_categories_products;
@@ -34,7 +35,17 @@ class DatabaseSeeder extends Seeder
             'two_factor_secret' => 'admin',
         ]);
         $user->createToken('Token Name')->accessToken;
-        
+
+        DB::table('addresses')->insertGetId([
+            'user_id' => $user->id,
+            'house_number' => '111',
+            'street_name' => 'Bagyan',
+            'city' => 'Yerevan',
+            'phone' => '+37477374373',
+            'status' => 'active',
+            'saved_address_status' => 'on',
+        ]);
+
         $bigStore = DB::table('big_stores')->insertGetId([
             'name' => 'test big store',
             'info' => 'test big store info',
@@ -85,7 +96,7 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
         ]);
 
-        $product = DB::table('products')->insert([
+        $product = DB::table('products')->insertGetId([
             'store_id' => $store,
             'name' => 'Test product',
             'productNumber' => '123456',
@@ -104,6 +115,18 @@ class DatabaseSeeder extends Seeder
             'totalQty' => '1',
             'sellStartDate' => Carbon::now(config('app.timezone_now'))->toDateTimeString(),
             'sellEndDate' => Carbon::now(config('app.timezone_now'))->addYear()->format('Y-m-d H-i-m'),
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
+
+        DB::table('options')->insertGetId([
+            'name' => 'Test product option',
+            'name_info' => 'Test product option info',
+            'status' => '1',
+            'price' => '10',
+            'photoFilePath' => 'test_test',
+            'photoFileName' => 'test_test',
+            'product_id' => $product,
             'updated_at' => now(),
             'created_at' => now(),
         ]);
