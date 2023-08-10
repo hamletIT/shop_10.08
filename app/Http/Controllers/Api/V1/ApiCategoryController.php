@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\BigStores;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\pivot_categories_products;
@@ -329,7 +330,7 @@ class ApiCategoryController extends BaseController
      */
     public function getCategories(Request $request)
     {
-        return response()->json(['category' => $this->apiVarableServices->StructureOfTheStandardSchema()]);
+        return response()->json(['category' => BigStores::with($this->apiVarableServices->StructureOfTheStandardSchema())->get()]);
     }
 
     /** 

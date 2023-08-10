@@ -179,29 +179,28 @@ class ApiVarableServices
      */
     public function getCart($userID)
     {
-        $cart = Carts::where('user_id',$userID)->with('product')->get()->groupBy('random_number');
-        $randPrcies = [];
-        
-        foreach($cart as $items)
-        {
-            $productTable = Products::with('productPrice')->where('id',$items[0]->product_id)->first();
+        $cart = Carts::where('user_id', $userID)->with('product')->get()->groupBy('random_number');
+        $randPrices = [];
+        $product = []; // Initialize the $product array here
+
+        foreach ($cart as $items) {
+            $productTable = Products::with('productPrice')->where('id', $items[0]->product_id)->first();
             $prod_price = $productTable->productPrice[0]->productPrice * $items[0]->totalQty;
             $randPrice = 0;
 
-            foreach($items as $item)
-            {
+            foreach ($items as $item) {
                 $option_array_price = json_decode($item->array_options);
                 $option_price = json_decode($option_array_price->id);
-                $option_qty = json_decode($option_array_price->qty);  
-                $optionTable = Options::where('id',$option_price)->first();
-                $qty_price = $option_qty * $optionTable->price * $items[0]->totalQty; 
+                $option_qty = json_decode($option_array_price->qty);
+                $optionTable = Options::where('id', $option_price)->first();
+                $qty_price = $option_qty * $optionTable->price * $items[0]->totalQty;
                 $randPrice += $qty_price;
             }
-            $randPrcies['product_id: '.$items[0]->product_id] = $randPrice + $prod_price;
+            $randPrices['product_id: ' . $items[0]->product_id] = $randPrice + $prod_price;
             $product[$items[0]->product_id] = $items[0];
         }
-        
-        return ['products'=>$product,'product_prices'=>$randPrcies,'Total_price:'=>array_sum($randPrcies)];  
+
+        return ['products' => $product, 'product_prices' => $randPrices, 'Total_price:' => array_sum($randPrices)];
     }
 
     /**
@@ -210,7 +209,12 @@ class ApiVarableServices
      */
     public function getOrder($userID)
     {
-        return [Orders::where('user_id',$userID)->with(['product'])->get()];
+        $totalPrcies = [];
+        $orders = Orders::where('user_id',$userID)->with(['product'])->get();
+        foreach ($orders as $value) {
+           $totalPrcies = $value['totalPrice'] + $value['totalPrice'];
+        }
+        return ['order' => $orders,'total_prices' => $totalPrcies];
     }
 
      /**
@@ -218,6 +222,11 @@ class ApiVarableServices
      */
     public function getOrders()
     {
-        return [Orders::with(['product'])->get()];
+        $totalPrcies = [];
+        $orders = Orders::with(['product'])->get();
+        foreach ($orders as $value) {
+           $totalPrcies = $value['totalPrice'] + $value['totalPrice'];
+        }
+        return ['orders' => $orders, 'total_prices' => $totalPrcies];
     }
 }

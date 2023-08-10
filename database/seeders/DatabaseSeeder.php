@@ -134,7 +134,7 @@ class DatabaseSeeder extends Seeder
         Prices::insertGetId([
             'product_id' => $product,
             'title' => 'Test product',
-            'productPrice' => '1',
+            'productPrice' => '10',
             'status' => '0',
             'updated_at' => now(),
             'created_at' => now(),

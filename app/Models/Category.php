@@ -18,19 +18,8 @@ class Category extends Model
         'title',
     ];
 
-    public function categories() 
-    {
-        return $this->belongsToMany(SubCategory::class, 'pivot_sub_categories_products', 'category_id', 'sub_category_id');
-    }
-
     public function products() 
     {
         return $this->belongsToMany(Products::class, 'pivot_categories_products', 'category_id', 'product_id');
     }
-
-    public function categoryImages()
-    {
-        return $this->hasMany(CategoryPhotos::class,'category_id');
-    }
-    
 }

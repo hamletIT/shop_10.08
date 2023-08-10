@@ -12,14 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('big_store_id')->unsigned();
-            $table->foreign('big_store_id')->references('id')->on('big_stores')->onDelete('cascade');    
+            $table->bigIncrements('id');   
             $table->string('title')->nullable();
             $table->string('status')->nullable();
-            $table->string('rating')->nullable();
-            $table->string('photoFileName')->nullable();
-            $table->string('photoFilePath')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrentOnUpdate();
         });

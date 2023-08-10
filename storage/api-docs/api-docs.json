@@ -1135,13 +1135,6 @@
                         "description": "Please write user ID",
                         "required": true,
                         "allowEmptyValue": true
-                    },
-                    {
-                        "name": "store_id",
-                        "in": "query",
-                        "description": "Please write store ID",
-                        "required": true,
-                        "allowEmptyValue": true
                     }
                 ],
                 "responses": {
@@ -1197,7 +1190,7 @@
                 ],
                 "summary": "Request which returns certein order",
                 "description": "",
-                "operationId": "8fcf25dee3e89129cce70d10def12c30",
+                "operationId": "31cfeb90c2c43be83ff53d33fc8524d5",
                 "parameters": [
                     {
                         "name": "user_id",
@@ -1240,47 +1233,6 @@
                         "in": "query",
                         "description": "Please write User ID",
                         "required": true,
-                        "allowEmptyValue": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "429": {
-                        "description": "validation error"
-                    }
-                }
-            }
-        },
-        "/api/filter/order": {
-            "get": {
-                "tags": [
-                    "Order Section"
-                ],
-                "summary": "Request that search via order name",
-                "description": "",
-                "operationId": "d0fa88f5a93ed1009fe515e84daff108",
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "query",
-                        "description": "Please write order user Id",
-                        "allowEmptyValue": true
-                    },
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "description": "Please write order user email",
                         "allowEmptyValue": true
                     }
                 ],

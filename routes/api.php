@@ -32,8 +32,10 @@ use App\Http\Controllers\Api\V1\ApiChildSubCategoryController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-// Route::post('/create/order',[ApiOrderController::class,'createOrder']); --- for test then delete and comment #2
-// Route::post('/add/toCart',[ApiCartController::class,'addToCart']);  --- for test then delete and comment #3
+// Route::post('/create/order',[ApiOrderController::class,'createOrder']); //--- for test then delete and comment #2
+// Route::post('/add/toCart',[ApiCartController::class,'addToCart']); // --- for test then delete and comment #3
+// Route::get('/get/cart/products',[ApiCartController::class,'getCartProducts']);
+
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // aplication section for authorized users

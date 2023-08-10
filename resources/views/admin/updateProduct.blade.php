@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <title>SB Admin 2 - Tables</title>
 
@@ -22,7 +23,7 @@
 
     <!-- Custom styles for this page -->
     <!-- <link href="{{asset('vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet"> -->
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 <body id="page-top">
@@ -38,51 +39,38 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Project Dislab</div>
+                <div class="sidebar-brand-text mx-3">Dstdelivery</div>
             </a>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" target="_blank" href="http://127.0.0.1:8000/api/documentation">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>@if(session()->get('locale') == "en") Swagger Api Documentation @else @lang('messages.Swagger Api Documentation') @endif</span></a>
-            </li>
-            <!-- Nav Item - Dashboard -->
+
+            
+           
+             <!-- Nav Item - swagger -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>@if(session()->get('locale') == "en") Dashboard @else @lang('messages.Dashboard') @endif</span></a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.statistic') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>@if(session()->get('locale') == "en") Statistics @else @lang('messages.Statistics') @endif</span></a>
-            </li>
+            
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.languages') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>@if(session()->get('locale') == "en") Languages @else @lang('messages.Languages') @endif</span></a>
-            </li>
+            </li> --}}
 
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                @if(session()->get('locale') == "en") Interface @else @lang('messages.Interface') @endif 
-            </div>
-
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.store') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add store @else @lang('messages.Add store') @endif</span>
-                </a>
+                <form action="{{ route('product.submit') }}" method="POST" class="form-horizontal" role="form">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">set products</button>
+                </form>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Components:</h6>
@@ -90,103 +78,7 @@
                         <a class="collapse-item" href="cards.html">Cards</a>
                     </div>
                 </div>
-            </li>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.Bigstore') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add Big Store @else @lang('messages.Add Big Store') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.category') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add Category @else @lang('messages.Add Category') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-             <!-- Nav Item - Pages Collapse Menu -->
-             <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.subCategory') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add Sub Category @else @lang('messages.Add Sub Category') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.childsubCategory') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add Child Sub Category @else @lang('messages.Add Child Sub Category') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.products') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add Product @else @lang('messages.Add Product') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.option') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add Option @else @lang('messages.Add Option') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
+            </li> 
 
         </ul>
         <!-- End of Sidebar -->
@@ -200,60 +92,7 @@
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <form class="form-inline">
-                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                            <i class="fa fa-bars"></i>
-                        </button>
-                    </form>
-
-                   <!-- Topbar Search -->
-                   <form action="{{ route('page.filter') }}" method="POST" 
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        @csrf
-                        <p>
-                        </p>
-                        <div class="d-flex">
-                        <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Select field @else @lang('messages.Select field') @endif</label>
-                            <select name ="table_name" class="form-select form-select-lg">
-                                @if(isset($productFilter))
-                                    <option selected value="Product">@if(session()->get('locale') == "en") Product @else @lang('messages.Product') @endif</option>
-                                @elseif(isset($optionFilter))
-                                    <option selected value="Option">@if(session()->get('locale') == "en") Option @else @lang('messages.Option') @endif</option>
-                                @elseif(isset($storeFilter))
-                                    <option selected value="Store">@if(session()->get('locale') == "en") Store @else @lang('messages.Store') @endif</option>
-                                @elseif(isset($categoryFilter))
-                                    <option selected value="Category">@if(session()->get('locale') == "en") Category @else @lang('messages.Category') @endif</option>
-                                @elseif(isset($subCategoryFilter))
-                                    <option selected value="SubCategory">@if(session()->get('locale') == "en") Sub Category @else @lang('messages.Sub Category') @endif</option>
-                                @elseif(isset($childSubCategoryFilter))
-                                    <option selected value="ChildSubCategory">@if(session()->get('locale') == "en") Child Sub Category @else @lang('messages.Child Sub Category') @endif</option>
-                                @else
-                                    <option selected value="Product">@if(session()->get('locale') == "en") Product @else @lang('messages.Product') @endif</option>
-                                    <option  value="Option">@if(session()->get('locale') == "en") Option @else @lang('messages.Option') @endif</option>
-                                    <option  value="Store">@if(session()->get('locale') == "en") Store @else @lang('messages.Store') @endif</option>
-                                    <option  value="Category">@if(session()->get('locale') == "en") Category @else @lang('messages.Category') @endif</option>
-                                    <option  value="SubCategory">@if(session()->get('locale') == "en") Sub Category @else @lang('messages.Sub Category') @endif</option>
-                                    <option  value="ChildSubCategory">@if(session()->get('locale') == "en") Child Sub Category @else @lang('messages.Child Sub Category') @endif</option>
-                                @endif
-                            </select>
-                            @if(session()->get('locale') == "en")
-                            <input type="text" name="name" class="form-control bg-light border-0 small" placeholder="Search for.."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            @else
-                            <input type="text" name="name" class="form-control bg-light border-0 small" placeholder="Искать.."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            @endif
-                            
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="submit">
-                                    @if(session()->get('locale') == "en") Search @else @lang('messages.Search') @endif
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                   
-                    <!-- Topbar Navbar -->
+                 
                 </nav>
                 <!-- End of Topbar -->
 
@@ -262,90 +101,50 @@
 
                 <section class="panel panel-default">
                     <div class="panel-heading"> 
-                    <h3 class="panel-title">@if(session()->get('locale') == "en") Update Product @else @lang('messages.Update Product') @endif </h3> 
+                    <h3 class="panel-title">Update Product</h3> 
                     </div> 
                     <div class="panel-body">
                     
                     <form action="{{ route('admin.update.product') }}" method="POST" enctype="multipart/form-data" class="form-horizontal" role="form">
                         @csrf
-                        <input type="hidden" class="form-control" value="{{$singleProduct->productNumber}}" name="productNumber" id="name" >
+                        <input type="hidden" name="id" value="{{$singleProduct->id}}">
                         <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") name @else @lang('messages.name') @endif</label>
+                            <label for="name" class="col-sm-3 control-label">Title</label>
                             <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->name}}" name="name" id="name" >
+                            <input type="text" class="form-control" value="{{$singleProduct->title}}" name="title" id="name" >
                             </div>
                         </div> <!-- form-group // -->
                         
+                       
                         <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") type @else @lang('messages.type') @endif</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->type}}" name="type" id="name" >
-                            </div>
-                        </div> <!-- form-group // -->
-                        <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") color @else @lang('messages.color') @endif</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->color}}" name="color" id="name" >
-                            </div>
-                        </div> <!-- form-group // -->
-                        <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") description @else @lang('messages.description') @endif</label>
+                            <label for="name" class="col-sm-3 control-label">Description</label>
                             <div class="col-sm-9">
                             <input type="text" class="form-control" value="{{$singleProduct->description}}" name="description" id="name" >
                             </div>
                         </div> <!-- form-group // -->
-                    
                         <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") size @else @lang('messages.size') @endif</label>
+                            <label for="name" class="col-sm-3 control-label">Price</label>
                             <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->size}}" name="size" id="name" >
+                            <input type="text" class="form-control" value="{{$singleProduct->productPrice[0]['price']}}" name="price" id="name" >
                             </div>
                         </div> <!-- form-group // -->
+                       
                         <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") status @else @lang('messages.status') @endif</label>
+                            <label for="name" class="col-sm-3 control-label">Count</label>
                             <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->status}}" name="status" id="name" >
+                            <input type="text" class="form-control" value="{{$singleProduct->count}}" name="count" id="name" >
                             </div>
                         </div> <!-- form-group // -->
+
                         <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") standardCost @else @lang('messages.standardCost') @endif</label>
+                            <label for="name" class="col-sm-3 control-label">Rate</label>
                             <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->standardCost}}" name="standardCost" id="name">
-                            </div>
-                        </div> <!-- form-group // -->
-                        <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") listprice @else @lang('messages.listprice') @endif</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->listprice}}" name="listprice" id="name" >
-                            </div>
-                        </div> <!-- form-group // -->
-                        <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") price @else @lang('messages.price') @endif</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->productPrice[0]['productPrice']}}" name="price" id="name" >
-                            </div>
-                        </div> <!-- form-group // -->
-                        <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") totalPrice @else @lang('messages.totalPrice') @endif</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->totalPrice}}" name="totalPrice" id="name" >
-                            </div>
-                        </div> <!-- form-group // -->
-                        <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") weight @else @lang('messages.weight') @endif</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->weight}}" name="weight" id="name" >
-                            </div>
-                        </div> <!-- form-group // -->
-                        <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") total Qty @else @lang('messages.total Qty') @endif</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->totalQty}}" name="totalQty" id="name" >
+                            <input type="text" class="form-control" value="{{$singleProduct->productRating[0]['rate']}}" name="rate" id="name" >
                             </div>
                         </div> <!-- form-group // -->
                         <div class="form-group">
                             <div class="col-sm-offset-3 col-sm-9">
-                            <button type="submit" class="btn btn-primary">@if(session()->get('locale') == "en") Send @else @lang('messages.Send') @endif</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
                             </div>
                         </div> <!-- form-group // -->
                     </form>

@@ -11,6 +11,9 @@ use App\Models\Prices;
 use App\Models\Options;
 use App\Models\Category;
 use App\Models\SubCategory;
+use App\Models\Rating;
+
+
 
 class Products extends Model
 {
@@ -62,6 +65,12 @@ class Products extends Model
     {
         return $this->hasMany(Prices::class,'product_id');
     }
+
+    public function productRating()
+    {
+        return $this->hasMany(Rating::class,'product_id');
+    }
+    
 
     public function productOptions()
     {
