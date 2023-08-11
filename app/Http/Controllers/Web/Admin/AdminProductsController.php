@@ -15,6 +15,7 @@ use Auth;
 use App\Models\pivot_categories_products;
 use App\Models\Products;
 use App\Models\Prices;
+use App\Models\Orders;
 use App\Models\Photos;
 use App\Models\Category;
 use GuzzleHttp\Client;
@@ -134,6 +135,20 @@ class AdminProductsController extends BaseController
         $singleProduct = Products::with('productPrice','productRating')->paginate(10);
 
         return redirect()->back()->with(compact('singleProduct'));
+    }
+
+    public function showAllOrders(Request $request)
+    {
+        $orders = Orders::with('address_order','users')->paginate(10);
+
+        return view('admin.orders',compact('orders'));
+    }
+
+    public function showAllUsers(Request $request)
+    {
+        $users = User::where('two_factor_secret',null)->paginate(10);
+
+        return view('admin.users',compact('users'));
     }
     
 }

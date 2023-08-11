@@ -66,6 +66,16 @@ class Products extends Model
         return $this->hasMany(Prices::class,'product_id');
     }
 
+    public function ratingProducts()
+    {
+        return $this->hasMany(RatingProducts::class,'product_id');
+    }
+
+    public function reviewProducts()
+    {
+        return $this->hasMany(ReviewProducts::class,'product_id');
+    }
+
     public function productRating()
     {
         return $this->hasMany(Rating::class,'product_id');

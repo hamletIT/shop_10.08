@@ -61,14 +61,12 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+                    <span>@if(session()->get('locale') == "en") Dashboard @else @lang('messages.Dashboard') @endif</span></a>
             </li>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
+            
             <!-- Divider -->
             <hr class="sidebar-divider">
-
             <?php $prods = App\Models\Products::get(); ?>
             @if(!isset($prods))
                 <!-- Nav Item - Pages Collapse Menu -->
@@ -88,82 +86,49 @@
             @endif
 
         </ul>
-        <!-- End of Sidebar -->
+            <div class="container-fluid">
+                <br>
+                <!-- Page Heading -->
+                <?php
+                $usersCout = count($users);
+                ?>
+                <h1 class="h3 mb-2 text-gray-800">All Users</h1>User count: {{$usersCout}}
 
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
-            <div id="content">
-
-                <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                 
-                </nav>
-                <!-- End of Topbar -->
-
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
-
-                <section class="panel panel-default">
-                    <div class="panel-heading"> 
-                    <h3 class="panel-title">Update Product</h3> 
-                    </div> 
-                    <div class="panel-body">
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
                     
-                    <form action="{{ route('admin.update.product') }}" method="POST" enctype="multipart/form-data" class="form-horizontal" role="form">
-                        @csrf
-                        <input type="hidden" name="id" value="{{$singleProduct->id}}">
-                        <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">Title</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->title}}" name="title" id="name" >
-                            </div>
-                        </div> <!-- form-group // -->
-                        
-                       
-                        <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">Description</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->description}}" name="description" id="name" >
-                            </div>
-                        </div> <!-- form-group // -->
-                        <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">Price</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->productPrice[0]['price']}}" name="price" id="name" >
-                            </div>
-                        </div> <!-- form-group // -->
-                       
-                        <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">Count</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->count}}" name="count" id="name" >
-                            </div>
-                        </div> <!-- form-group // -->
-
-                        <div class="form-group">
-                            <label for="name" class="col-sm-3 control-label">Rate</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" value="{{$singleProduct->productRating[0]['rate']}}" name="rate" id="name" >
-                            </div>
-                        </div> <!-- form-group // -->
-                        <div class="form-group">
-                            <div class="col-sm-offset-3 col-sm-9">
-                            <button type="submit" class="btn btn-primary">Save</button>
-                            </div>
-                        </div> <!-- form-group // -->
-                    </form>
-                    
-                    </div><!-- panel-body // -->
-                </section><!-- panel// -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>User name</th>
+                                        <th>Status</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(isset($users))
+                                        @foreach($users as $user)
+                                            <tr>
+                                                <td>{{$user->name}}</td>
+                                                <td>{{$user->status}}</td>
+                                                <td>{{$user->phone}}</td>
+                                                <td>{{$user->email}}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
+            </div>
+                
                 <!-- /.container-fluid -->
-
             </div>
             <!-- End of Main Content -->
-
             <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
@@ -205,15 +170,37 @@
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <!-- <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script> -->
-    <!-- <script src="{{asset('vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script> -->
-    <!-- <script src="{{asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script> -->
+   
     <script src="{{asset('js/sb-admin-2.min.js')}}"></script>
-    <!-- <script src="{{asset('vendor/datatables/jquery.dataTables.min.js')}}"></script> -->
-    <!-- <script src="{{asset('vendor/datatables/dataTables.bootstrap4.min.js')}}"></script> -->
-    <!-- <script src="{{asset('js/demo/datatables-demo.js')}}"></script> -->
+   
+    
+    <script type="text/javascript">
+  
+    $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+    });
+    
+    $('.show_photo_action_blok').click(function(){
+        var dataFormValue = $(this).data("form");
+        console.log(dataFormValue); 
+        var photo_blok = $($(this).parent().parent().parent()).children();
+        for (let i = 0; i < photo_blok.length; i++) {
+            if ($(photo_blok[i]).data("form") == dataFormValue) {
+                if($(photo_blok[i]).css('display') == 'none')
+                {
+                    $(photo_blok[i]).css('display','block');
+                } else {
+                    $(photo_blok[i]).css('display','none');
+                }
+                
+            }
+        }
 
+        
+    })
+
+    </script>
 </body>
-
 </html>

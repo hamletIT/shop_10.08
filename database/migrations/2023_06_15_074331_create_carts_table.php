@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
             $table->string('random_number');
-            $table->string('status');
             $table->date('sessionStartDate');
             $table->date('sessionEndDate');
             $table->integer('totalQty');
