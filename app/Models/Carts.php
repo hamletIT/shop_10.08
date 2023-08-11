@@ -29,7 +29,7 @@ class Carts extends Model
      * Get the phone record associated with the user.
      */
     public function product()
-    {
-        return $this->belongsTo('App\Models\Products','product_id');
-    }
+{
+    return $this->belongsTo(Products::class);
+}
 }

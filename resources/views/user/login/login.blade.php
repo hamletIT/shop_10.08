@@ -40,7 +40,7 @@
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Welcome Back! Admin</h1>
+                                        <h1 class="h4 text-gray-900 mb-4">Welcome Back</h1>
                                          
                                         @if(isset($errors) && count($errors) > 0)
                                             <div class="alert alert-danger alert-dismissible fade show">
@@ -52,7 +52,7 @@
                                             </div>
                                         @endif
                                     </div>
-                                    <form class="user" action="{{ route('admin.login.submit') }}" method="POST">
+                                    <form class="user" action="{{ route('user.login') }}" method="POST">
                                     @csrf
                                         <div class="form-group">
                                             <input type="email" name="email" class="form-control form-control-user"
@@ -73,14 +73,6 @@
                                         <div class="col-lg-7">
 						                    <button class="btn btn-primary btn-user btn-block" type="submit">{{ __("Submit") }}</button>
 						                </div>
-                                       
-                                        <!-- <hr>
-                                        <a href="index.html" class="btn btn-google btn-user btn-block">
-                                            <i class="fab fa-google fa-fw"></i> Login with Google
-                                        </a>
-                                        <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                                            <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
-                                        </a> -->
                                     </form>
                                     <hr>
                                    

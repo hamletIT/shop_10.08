@@ -11,6 +11,12 @@ use App\Http\Controllers\Web\User\GoogleController;
 use App\Http\Controllers\Web\User\AuthUserController;
 use App\Http\Controllers\Web\Admin\AuthAdminController;
 use App\Http\Controllers\Web\Admin\AdminProductsController;
+use App\Http\Controllers\Web\User\CartUserController;
+use App\Http\Controllers\Web\User\CheckoutController;
+use App\Http\Controllers\Web\User\ReviewController;
+use App\Http\Controllers\Web\User\RatingController;
+
+
 
 
 
@@ -45,10 +51,29 @@ Route::prefix('user')->group(function() {
     Route::get('facebook/callback',[FacebookController::class,'handleCallback'])->name('facebok.callback');
     Route::get('google/login',[GoogleController::class,'provider'])->name('google.login');
     Route::get('google/login/callback',[GoogleController::class,'callbackHandle'])->name('google.login.callback');
+
     Route::post('login',[AuthUserController::class,'login'])->name('user.login');
     Route::get('register/show',[AuthUserController::class,'registerShow'])->name('user.register.show');
     Route::get('login/show',[AuthUserController::class,'loginShow'])->name('user.login.show');
     Route::post('register',[AuthUserController::class,'register'])->name('user.register');
+    Route::get('/dashboard',[AuthUserController::class,'dashboard'])->name('user.dashboard');
+
+    Route::post('add-to/cart',[CartUserController::class,'addToCart'])->name('add.cart');
+    Route::get('show/cart',[CartUserController::class,'showCart'])->name('user.cart');
+    Route::post('add/quantity/for-one/product',[CartUserController::class,'addQuantityForOneProduct'])->name('add.prod.qty.cart');
+    Route::post('/delete/cart/products',[CartUserController::class,'deleteCartProducts'])->name('delete.cart.prod');;
+    Route::get('show/checkoute',[CartUserController::class,'showChekoutPage'])->name('user.checkout');
+    Route::post('save/checkoute',[CheckoutController::class,'checkout'])->name('user.checkout.save');
+    Route::get('/cancel',[CheckoutController::class,'cancelCheckout'])->name('checkout.cancel');
+    Route::get('/success',[CheckoutController::class,'successCheckout'])->name('checkout.success');
+    Route::get('/show/orders',[CheckoutController::class,'showOrders'])->name('show.orders');
+
+    Route::get('/rating/{productID}',[RatingController::class,'addRatingToProduct'])->name('add.rating');
+    Route::get('/review/{productID}',[ReviewController::class,'addReviewToProduct'])->name('add.review');
+
+    Route::post('/review/save',[ReviewController::class,'saveReviewToProduct'])->name('set.review.prod');
+    Route::post('/rating/save',[RatingController::class,'saveRatingToProduct'])->name('set.rating.prod');
+    
 });
 
 
@@ -65,7 +90,10 @@ Route::prefix('admin')->group(function() {
     Route::get('/show-product-update/{productID}',[AdminProductsController::class,'showPrductUpdate'])->name('admin.update.show');
     Route::post('/update-product-filds',[AdminProductsController::class,'updateProductFilds'])->name('admin.update.product');
     Route::post('/delete/product/by/ID',[AdminProductsController::class,'deleteProductByID'])->name('delete.product');
+    Route::get('/show/orders',[AdminProductsController::class,'showAllOrders'])->name('admin.show.all.orders');
+    Route::get('/show/users',[AdminProductsController::class,'showAllUsers'])->name('admin.show.all.users');
 
+   
 
     // // -----------------------------------CREATE OR ADD SECTION-----------------------------------------------------------------\\
     Route::post('/add/photos/for_childSubCategory',[AdminGlobalCreateOrAddSectionController::class,'addPhotosByNameOfChildSubCategory'])->name('add.child_sub_category_photos');

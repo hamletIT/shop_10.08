@@ -59,7 +59,7 @@
                     </div>
                     <div class="sidebar-brand-text mx-3">My cart</div>
             </a>
-            
+
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('show.orders') }}">
                     <div class="sidebar-brand-icon rotate-n-15">
                         <i class="fas fa-laugh-wink"></i>
@@ -72,8 +72,9 @@
 
         </ul>
                 <div class="container-fluid">
+                    <br>
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Product Table</h1>
+                    <h1 class="h3 mb-2 text-gray-800">My Cart</h1> Sum prcie: {{$sum}}
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
@@ -83,70 +84,47 @@
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
+                                            <th>Action Qty</th>
+                                            <th>Action Deelte</th>
                                             <th>Photo</th>
                                             <th>title</th>
-                                            <th>price</th>
-                                            <th>Add to Cart</th>
-                                            <th>Add review</th>
-                                            <th>Add rating</th>
-                                            <th>Action show</th>
+                                            <th>Price</th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if(isset($allProducts))
-                                            @foreach($allProducts as $prod)
-                                                <tr>
-                                                    <td class="d-flex flex-row">
-                                                        <img width="70px" height="50px" src="{{$prod->image}}" alt="">
-                                                    </td>
-                                                    <td>{{$prod->title}}</td>
-                                                    <td>{{$prod->productPrice[0]->price}}</td>
-                                                    <td>
-                                                        <form action="{{ route('add.cart') }}" method="POST" class="form-horizontal" role="form">
+                                        @if(isset($cart))
+                                            @foreach($cart as $value)
+                                                     <tr>
+                                                        <td class="">
+                                                            <p class="btn btn-success minusQtyProd">-</p>
+                                                            <p class="btn btn-primary qtyAnswer">{{$value[0]['totalQty']}}</p>
+                                                            <p class="btn btn-info addQtyProd">+</p>
+                                                          
+                                                            <form action="{{ route('add.prod.qty.cart') }}" method="POST" class="form-horizontal" role="form">
                                                                 @csrf
-                                                                <input class="product_id" name="product_id" value='{{$prod->id}}' type="hidden">
-                                                                <button type="submit" class="btn btn-danger">Add to cart</button>
-                                                        </form>
-                                                    </td>
-                                                    <td>
-                                                        <form action="{{ route('add.rating',['productID' => $prod->id]) }}" method="GET" class="form-horizontal" role="form">
-                                                                @csrf
-                                                                <button type="submit" class="btn btn-danger">Add Rating</button>
-                                                        </form>
-                                                    </td>
-                                                    <td>
-                                                        <form action="{{ route('add.review',['productID' => $prod->id]) }}" method="GET" class="form-horizontal" role="form">
-                                                                @csrf
-                                                                <button type="submit" class="btn btn-danger">Add Review</button>
-                                                        </form>
-                                                    </td>
-                                                    <td>
-                                                        <button data-form="{{$prod->id}}" type="button" class="btn btn-danger show_photo_action_blok">Show</button>
-                                                    </td>
-                                                </tr>
-                                              
-                                                <tr class="photo_action_blok" style="display:none;"data-form="{{$prod->id}}">
-                                                    <td class="d-flex flex-row">
-                                                        <?php 
-                                                            foreach ($prod->reviewProducts as $value) {
-                                                                $user = App\Models\User::where('id',$value->user_id)->first();
-                                                                echo 'User Name: '.$user->name.' Review: '.$value->text. '<br>'; 
-                                                            }
-                                                        ?>
-                                                    </td>
-
-                                                    <td class="d-flex flex-row">
-                                                   
-                                                    Users Set Rating:
-                                                    <?php 
-                                                        $ratings = $prod->ratingProducts->pluck('rating')->toArray();
-                                                        $average = count($ratings) > 0 ? array_sum($ratings) / count($ratings) : 0;
-                                                        echo $average;
-                                                    ?>
-                                                    </td>
-                                                    
-                                                </tr>
-                                                
+                                                                <input class="product_id" name="product_id" value="{{$value[0]['product_id']}}" type="hidden">
+                                                                <input class="qty qtyAnswerVal" name="qty" value="{{$value[0]['totalQty']}}" type="hidden">
+                                                                <button type="submit" class="btn btn-warning">Save</button>
+                                                            </form>
+                                                        </td>
+                                                        <td class="">
+                                                            <form action="{{ route('delete.cart.prod') }}" method="POST" class="form-horizontal" role="form">
+                                                                    @csrf
+                                                                    <input class="product_id" name="product_id" value="{{$value[0]['product_id']}}" type="hidden">
+                                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                            </form>
+                                                        </td>
+                                                        <td class="">
+                                                            <img width="70px" height="50px" src="{{$value[0]->product['image']}}" alt="">
+                                                        </td>
+                                                        <td>{{$value[0]->product['title']}}</td>
+                                                        @foreach($singlePrice as $key => $val)
+                                                            @if($value[0]['product_id'] == $key)
+                                                                <td>{{$val}}</td>
+                                                            @endif
+                                                        @endforeach
+                                                    </tr> 
                                             @endforeach
                                         @endif
                                     </tbody>
@@ -154,7 +132,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card-body">
+                        <br>
+                        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('user.checkout') }}">
+                            <div class="sidebar-brand-icon rotate-n-15">
+                                <i class="fas fa-laugh-wink"></i>
+                            </div>
+                          
+                            <p class="sidebar-brand-text mx-3 btn btn-success">Checkout</p>
+                        </a>
+                    </div>
                 </div>
+               
 
                 
                 <!-- /.container-fluid -->
@@ -201,39 +190,42 @@
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <!-- <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
-    <script src="{{asset('vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script> -->
     <script src="{{asset('js/sb-admin-2.min.js')}}"></script>
-    <!-- <script src="{{asset('vendor/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('vendor/datatables/dataTables.bootstrap4.min.js')}}"></script> -->
-    <!-- <script src="{{asset('js/demo/datatables-demo.js')}}"></script> -->
-    
     <script type="text/javascript">
-  
-    $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+        });
+        
+        $(".addQtyProd").click(function() {
+            var $parent = $(this).closest("td");
+
+            var $qtyAnswer = $parent.find(".qtyAnswer");
+            var $qtyAnswerVal = $parent.find(".qtyAnswerVal"); 
+
+            var currentQty = parseInt($qtyAnswerVal.val()); 
+            var newQty = currentQty + 1; 
+
+            $qtyAnswer.html(newQty);
+            $qtyAnswerVal.val(newQty);
+        });
+
+        $(".minusQtyProd").click(function() {
+            var $parent = $(this).closest("td"); 
+            var $qtyAnswer = $parent.find(".qtyAnswer"); 
+            var $qtyAnswerVal = $parent.find(".qtyAnswerVal"); 
+            var currentQty = parseInt($qtyAnswerVal.val());
+
+            if (currentQty == 1) {
+                $qtyAnswer.html(1);
+                $qtyAnswerVal.val(1);
+            }else{
+                var newQty = currentQty - 1; 
+                $qtyAnswer.html(newQty);
+                $qtyAnswerVal.val(newQty);
             }
         });
-    $('.show_photo_action_blok').click(function(){
-        var dataFormValue = $(this).data("form");
-        console.log(dataFormValue); 
-        var photo_blok = $($(this).parent().parent().parent()).children();
-        for (let i = 0; i < photo_blok.length; i++) {
-            if ($(photo_blok[i]).data("form") == dataFormValue) {
-                if($(photo_blok[i]).css('display') == 'none')
-                {
-                    $(photo_blok[i]).css('display','block');
-                } else {
-                    $(photo_blok[i]).css('display','none');
-                }
-                
-            }
-        }
-    })
     </script>
 </body>
-
 </html>

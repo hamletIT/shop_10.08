@@ -63,11 +63,6 @@ class User extends Authenticatable
         return $this->hasMany(Carts::class);
     }
 
-    public function userStore()
-    {
-        return $this->hasMany(Stores::class);
-    }
-
     public function getProfilePhotoUrlAttribute()
     {
         return true;

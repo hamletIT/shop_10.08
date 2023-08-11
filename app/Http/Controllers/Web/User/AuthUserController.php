@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\BigStores;
 use App\Models\User;
+use App\Models\Products;
 use App\Models\Applications;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -25,6 +26,12 @@ class AuthUserController extends BaseController
     {
         return view('user.login.login');
     }
+    public function dashboard()
+    {
+        $allProducts = Products::with('productImages','productPrice')->orderBy('created_at','desc')->paginate(10);
+        // dd($allProducts);
+        return view('user.dashboard',compact('allProducts'));
+    }
 
     public function login(Request $request)
     {
@@ -40,7 +47,9 @@ class AuthUserController extends BaseController
 
         Auth::login($user);
 
-        return redirect()->route('user.dashboard');
+        $allProducts = Products::with('productImages','productPrice')->orderBy('created_at','desc')->paginate(10);
+        // dd($allProducts);
+        return view('user.dashboard',compact('allProducts'));
     }
 
     public function register(Request $input)
