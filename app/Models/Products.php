@@ -13,18 +13,19 @@ use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\Rating;
 
-
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 
 class Products extends Model
 {
-
+    use Notifiable, HasApiTokens, HasFactory;
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'store_id',
         'name',
         'productNumber',
         'rating',

@@ -24,6 +24,46 @@
     <!-- Custom styles for this page -->
     <!-- <link href="{{asset('vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet"> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        .slidecontainer {
+            width: 100%; /* Width of the outside container */
+            }
+
+            /* The slider itself */
+            .slider {
+            -webkit-appearance: none;  /* Override default CSS styles */
+            appearance: none;
+            width: 100%; /* Full-width */
+            height: 25px; /* Specified height */
+            background: #d3d3d3; /* Grey background */
+            outline: none; /* Remove outline */
+            opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+            -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+            transition: opacity .2s;
+            }
+
+            /* Mouse-over effects */
+            .slider:hover {
+            opacity: 1; /* Fully shown on mouse-over */
+            }
+
+            /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+            .slider::-webkit-slider-thumb {
+            -webkit-appearance: none; /* Override default look */
+            appearance: none;
+            width: 25px; /* Set a specific slider handle width */
+            height: 25px; /* Slider handle height */
+            background: #04AA6D; /* Green background */
+            cursor: pointer; /* Cursor on hover */
+            }
+
+            .slider::-moz-range-thumb {
+            width: 25px; /* Set a specific slider handle width */
+            height: 25px; /* Slider handle height */
+            background: #04AA6D; /* Green background */
+            cursor: pointer; /* Cursor on hover */
+            }
+    </style>
 </head>
 
 <body id="page-top">
@@ -35,7 +75,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard.public') }}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
@@ -55,6 +95,12 @@
                 <a class="nav-link" href="{{ route('admin.show.all.orders') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Orders</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('show.category') }}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Categoris</span></a>
             </li>
            
             
@@ -79,10 +125,50 @@
             @endif
 
         </ul>
+        @if(isset($allProducts))
             <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-2 text-gray-800">filter product</h1>
+
+                <div>
+                    <form action="{{ route('filter.product.admin') }}" method="POST" class="form-horizontal" role="form">
+                            @csrf
+                            <label for="cars">Choose a category:</label>
+                            <select name="category_id" id="category">
+                                <option selected value="">--</option>
+                                @foreach($allCategory as $category)
+                                    <option value="{{$category->id}}">{{$category->title}}</option>
+                                @endforeach
+                            </select>
+                            <br><br>
+                            <label for="cars">Write product name</label>
+                            <input type="text" value="" name="title">
+                            <br><br>
+                            <div class="slidecontainer">
+                                <input name="min_val" type="range" min="{{$minValue}}" max="{{$maxValue}}" value="{{$maxValue / 2}}" class="slider" id="myRange">
+                                <p>Min Price: <span id="demo"></span></p>
+                            </div>
+                            <div class="slidecontainer">
+                                <input name="max_val" type="range" min="{{$minValue}}" max="{{$maxValue}}" value="{{$maxValue / 2}}" class="slider" id="myRange1">
+                                <p>Max Price: <span id="demo1"></span></p>
+                            </div>
+                            <button type="submit" class="btn btn-danger">filter</button><a href="{{ route('admin.dashboard') }}">Clear filter</a>
+                    </form>
+                   
+                </div>
+                <br>
                 <!-- Page Heading -->
                 <h1 class="h3 mb-2 text-gray-800">Product Table</h1>
-
+                @if(isset($errors) && count($errors) > 0)
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <ul class="list-unstyled">
+                            @foreach($errors as $error)
+                            <li> {{ $error[0] }} </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     
@@ -101,7 +187,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if(isset($allProducts))
+                                   
                                     @foreach($allProducts as $prod)
                                         <tr>
                                             <td>{{$prod->title}}</td>
@@ -133,15 +219,17 @@
                                                 {{$prod->description}}
                                             </td>
                                         </tr>
+                                        
                                     @endforeach
-                                    @endif
                                 </tbody>
                             </table>
+                            {{ $allProducts->links() }}
+
                         </div>
                     </div>
                 </div>
             </div>
-                
+            @endif
                 <!-- /.container-fluid -->
             </div>
             <!-- End of Main Content -->
@@ -216,6 +304,24 @@
 
         
     })
+
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value; // Display the default slider value
+
+    // Update the current slider value (each time you drag the slider handle)
+    slider.oninput = function() {
+    output.innerHTML = this.value;
+    }
+
+    var slider1 = document.getElementById("myRange1");
+    var output1 = document.getElementById("demo1");
+    output1.innerHTML = slider1.value; // Display the default slider value
+
+    // Update the current slider value (each time you drag the slider handle)
+    slider1.oninput = function() {
+    output1.innerHTML = this.value;
+    }
 
     </script>
 </body>

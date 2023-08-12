@@ -63,30 +63,37 @@
             </a>
             <hr class="sidebar-divider my-0">
         </ul>
-        <div class="container-fluid">
-            <!-- Page Heading -->
-            <br>
-            <h1 class="h3 mb-2 text-gray-800">Set Review</h1>
-            <div class="card shadow mb-4">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <form action="{{ route('set.review.prod') }}" method="POST" class="form-horizontal" role="form">
-                                @csrf
-                                <div class="form-group">
-                                    <label for="name" class="col-sm-3 control-label">Text</label>
-                                    <div class="col-sm-9">
-                                    <input type="text" class="form-control" value='' name="text" id="product_id" >
-                                    </div>
-                                </div> <!-- form-group // -->
-                                <input class="product_id" name="product_id" value='{{$id}}' type="hidden">
-                                <button type="submit" class="btn btn-danger">Save Review</button>
-                        </form>
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <br>
+                <h1 class="h3 mb-2 text-gray-800">Set Review</h1>
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            @if(isset($errors) && count($errors) > 0)
+                                <div class="alert alert-danger alert-dismissible fade show">
+                                    <ul class="list-unstyled">
+                                        @foreach($errors as $error)
+                                        <li> {{ $error[0] }} </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                            <form action="{{ route('set.review.prod') }}" method="POST" class="form-horizontal" role="form">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="name" class="col-sm-3 control-label">Text</label>
+                                        <div class="col-sm-9">
+                                        <input type="text" class="form-control" value='' name="text" id="product_id" >
+                                        </div>
+                                    </div> <!-- form-group // -->
+                                    <input class="product_id" name="product_id" value='{{$id}}' type="hidden">
+                                    <button type="submit" class="btn btn-danger">Save Review</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-                
                 <!-- /.container-fluid -->
             </div>
             <!-- End of Main Content -->

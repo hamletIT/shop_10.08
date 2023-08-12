@@ -13,14 +13,13 @@ use App\Models\Stores;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens;
+    use Notifiable, HasApiTokens, HasFactory;
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'code',
         'status',
         'phone',
         'name',

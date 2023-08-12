@@ -3,95 +3,35 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use Illuminate\Support\Facades\Validator;
-use App\Models\BigStores;
-use App\Models\User;
-use App\Models\Applications;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
-use App\Http\Services\VarableServices;
-use Illuminate\Support\Facades\Hash;
-use Auth;
 use App\Models\pivot_categories_products;
 use App\Models\Products;
 use App\Models\Prices;
-use App\Models\Orders;
-use App\Models\Photos;
 use App\Models\Category;
-use GuzzleHttp\Client;
 use App\Models\Rating;
-use Illuminate\Support\Facades\Http;
-use Intervention\Image\Facades\Image;
-use GuzzleHttp\Psr7\Request as Req;
-use Illuminate\Support\Facades\File;
-use Illuminate\Routing\Controller as BaseController;
+use App\Abstracts\BaseAdminController;
+use App\Interfaces\ProductDataHandlerInterface;
+use App\Jobs\ProcessProductData;
+use App\Http\Requests\Services\ValidateupdateProductFilds;
+use App\Http\Requests\Services\ValidateProductId;
+use App\Http\Requests\Services\ValidateProductFilter;
 
-class AdminProductsController extends BaseController
+class AdminProductsController extends BaseAdminController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    public function showProducts()
+    public function __construct(ProductDataHandlerInterface $dataHandler)
     {
-        return view('admin.products');
+        parent::__construct($dataHandler);
     }
+
     public function addProduct(Request $request)
     {
-        $client = new Client();
-        $request = new Req('GET', 'https://fakestoreapi.com/products');
-        $send = $client->sendAsync($request)->wait();
-        
-        $arrayProducts = $send->getBody()->getContents();
-        foreach (json_decode($arrayProducts) as  $value) {
-            $category = Category::insertGetId([
-                'title' =>$value->category,
-                'status'=>'active',
-                'updated_at' => now(),
-                'created_at' => now(),
-            ]);
-            $trimmedDescription = substr($value->description, 0, 500);
-            $product = Products::insertGetId([
-                'title' =>$value->category,
-                'description'=>$trimmedDescription,
-                'image' => $value->image,
-                'count' => $value->rating->count ?? 1,
-                'updated_at' => now(),
-                'created_at' => now(),
-            ]);
-            
-            $response = Http::get($value->image);
-            $destinationPath = 'public/Images';
-            $imageData = $response->body();
-            $image = Image::make($imageData);
-            $filename = uniqid() . '.jpg';
-            $image->save(storage_path($destinationPath . '/'. $filename));
-            Photos::create([
-                'path' => $filename,
-                'product_id' => $product,
-                'updated_at' => now(),
-                'created_at' => now(),
-            ]);
-            
-            Prices::create([
-                'product_id' => $product,
-                'price' => $value->price,
-                'updated_at' => now(),
-                'created_at' => now(),
-            ]);
-            Rating::create([
-                'product_id' => $product,
-                'count' => $value->rating->count ?? 1,
-                'rate' => $value->rating->rate
-            ]);
-            pivot_categories_products::create([
-                'category_id' => $category,
-                'product_id' => $product,
-                'updated_at' => now(),
-                'created_at' => now(),
-            ]);
-        }
-        $allProducts = Products::paginate(10);
+        ProcessProductData::dispatch($this->dataHandler);
 
-        return view('admin.dashboard',compact('allProducts'));
+        return $this->dashboard();
     }
 
     public function showPrductUpdate($id)
@@ -101,7 +41,7 @@ class AdminProductsController extends BaseController
         return view('admin.updateProduct',compact('singleProduct'));
     }
 
-    public function updateProductFilds(Request $request)
+    public function updateProductFilds(ValidateupdateProductFilds $request)
     {
         Products::where('id',$request->id)->update([
             'title' => $request['title'],
@@ -120,35 +60,54 @@ class AdminProductsController extends BaseController
         return redirect()->back()->with(compact('updatedProduct'));
     }
 
-    public function deleteProductByID(Request $request)
+    public function deleteProductByID(ValidateProductId $request)
     {
-        $rules = [
-            'product_id' => 'required',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return redirect()->back()->with(array('errors' => $validator->getMessageBag()->toArray()));
-        }
-
         $product = Products::where('id',$request->product_id)->first();
         $product->delete();
-        $singleProduct = Products::with('productPrice','productRating')->paginate(10);
 
-        return redirect()->back()->with(compact('singleProduct'));
+        return $this->dashboard();
     }
 
-    public function showAllOrders(Request $request)
+    public function filterProduct(ValidateProductFilter $request)
     {
-        $orders = Orders::with('address_order','users')->paginate(10);
+        $query = Products::query();
+        $collection = collect(Prices::pluck('price'));
+        $maxValue = $request->max_val;
+        $minValue = $request->min_val;
+        $allCategory = Category::get();
 
-        return view('admin.orders',compact('orders'));
-    }
-
-    public function showAllUsers(Request $request)
-    {
-        $users = User::where('two_factor_secret',null)->paginate(10);
-
-        return view('admin.users',compact('users'));
-    }
+        if ($request->has('title') && $request->title !== null) {
+            $query->where('title', 'LIKE', '%' . $request->input('title') . '%');
+        }
     
+        if ($request->has('category_id') && $request->category_id !== null) {
+            $pivotTable = pivot_categories_products::where('category_id', $request->input('category_id'))->get();
+            $categoryIds = $pivotTable->pluck('product_id');
+            $query->whereIn('id', $categoryIds);
+        }
+    
+        if ($request->has('min_val') && $request->has('max_val') && $request->has('max_val') && $request->has('min_val')) {
+            $min = $request->input('min_val');
+            $max = $request->input('max_val');
+            
+            $query->whereHas('productPrice', function ($q) use ($min, $max) {
+                $q->where('price', '>', $min)->where('price', '<', $max);
+            });
+        }
+    
+        $allProducts = $query->with('productImages','productPrice')->orderBy('created_at','desc')->paginate(10);
+    
+        return view('user.dashboard',compact('allProducts','maxValue','minValue','allCategory'));
+    }
+
+    protected function dashboard()
+    {
+        $allProducts = Products::with('productImages','productPrice')->orderBy('created_at','desc')->paginate(10);
+        $collection = collect(Prices::pluck('price'));
+        $maxValue = $collection->max();
+        $minValue = $collection->min();
+        $allCategory = Category::get();
+
+        return view('admin.dashboard',compact('allProducts','maxValue','minValue','allCategory'));
+    }
 }

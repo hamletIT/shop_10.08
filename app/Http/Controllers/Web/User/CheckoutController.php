@@ -5,16 +5,15 @@ namespace App\Http\Controllers\Web\User;
 use App\Models\Orders;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\Validator;
 use App\Models\Carts;
-use App\Models\Products;
 use App\Models\User;
 use App\Models\Addresses;
-use Carbon\Carbon;
 use Auth;
 use Intervention\Image\Exception\NotFoundException;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
+use App\Http\Requests\Services\ValidateSessionID;
+
 class CheckoutController extends BaseController
 {
     public function checkout(Request $request)
@@ -74,7 +73,6 @@ class CheckoutController extends BaseController
         $checkoutUrl = $session->url;
 
         return redirect($checkoutUrl);
-        // dd($request->all());
     }
 
     public function successCheckout(Request $request)
@@ -84,6 +82,9 @@ class CheckoutController extends BaseController
         Stripe::setApiKey(env('SRIPE_SECRET_KEY'));
         $cuctomer = null;
         $sessionId = $request->get('session_id');
+        $validatedData = $this->validate($request, [
+            'session_id' => [new ValidateSessionID],
+        ]);
         $session = Session::retrieve($sessionId);
         
         if (!$session) {

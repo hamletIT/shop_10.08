@@ -35,7 +35,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard.public') }}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
@@ -57,12 +57,7 @@
                     <span>Orders</span></a>
             </li>
            
-             <!-- Nav Item - swagger -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
+        
 
             
             <!-- Divider -->
@@ -110,7 +105,6 @@
                                         <th>Order number</th>
                                         <th>Price</th>
                                         <th>Status</th>
-                                       
                                     </tr>
                                 </thead>
                                 <tbody>

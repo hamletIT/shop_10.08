@@ -73,6 +73,15 @@
         </ul>
                 <div class="container-fluid">
                     <br>
+                    @if(isset($errors) && count($errors) > 0)
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <ul class="list-unstyled">
+                                @foreach($errors as $error)
+                                <li> {{ $error[0] }} </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">Orders</h1>
 
@@ -89,20 +98,18 @@
                                             <th>Status</th>
                                             <th>Order address house</th>
                                             <th>Order address street</th>
-
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @if(isset($orders))
                                             @foreach($orders as $value)
-                                                     <tr>
-                                                        <td>{{$value->order_number}}</td>
-                                                        <td>{{$value->total_price}}</td>
-                                                        <td>{{$value->status}}</td>
-                                                        <td>{{$value->address_order->house_number}}</td>
-                                                        <td>{{$value->address_order->street_name}}</td>
-                                                        
-                                                    </tr> 
+                                                <tr>
+                                                    <td>{{$value->order_number}}</td>
+                                                    <td>{{$value->total_price}}</td>
+                                                    <td>{{$value->status}}</td>
+                                                    <td>{{$value->address_order->house_number}}</td>
+                                                    <td>{{$value->address_order->street_name}}</td>
+                                                </tr> 
                                             @endforeach
                                         @endif
                                     </tbody>
@@ -111,9 +118,6 @@
                         </div>
                     </div>
                 </div>
-               
-
-                
                 <!-- /.container-fluid -->
             </div>
             <!-- End of Main Content -->
