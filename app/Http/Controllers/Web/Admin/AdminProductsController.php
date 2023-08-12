@@ -57,7 +57,9 @@ class AdminProductsController extends BaseAdminController
             'rate' => $request['rate'],
         ]);
 
-        return redirect()->back()->with(compact('updatedProduct'));
+        // return redirect()->route('admin.update.show',$request->id);
+        return redirect()->to('/show-product-update/'.$request->id);
+        // return redirect()->back()->with(compact('updatedProduct'));
     }
 
     public function deleteProductByID(ValidateProductId $request)
