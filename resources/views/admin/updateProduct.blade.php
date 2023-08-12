@@ -35,7 +35,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard.public') }}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
@@ -57,12 +57,7 @@
                     <span>Orders</span></a>
             </li>
            
-             <!-- Nav Item - swagger -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
+          
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
@@ -111,7 +106,15 @@
                     <h3 class="panel-title">Update Product</h3> 
                     </div> 
                     <div class="panel-body">
-                    
+                    @if(isset($errors) && count($errors) > 0)
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <ul class="list-unstyled">
+                                @foreach($errors as $error)
+                                <li> {{ $error[0] }} </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <form action="{{ route('admin.update.product') }}" method="POST" enctype="multipart/form-data" class="form-horizontal" role="form">
                         @csrf
                         <input type="hidden" name="id" value="{{$singleProduct->id}}">

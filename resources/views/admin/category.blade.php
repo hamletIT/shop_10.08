@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <title>SB Admin 2 - Tables</title>
 
@@ -22,7 +23,7 @@
 
     <!-- Custom styles for this page -->
     <!-- <link href="{{asset('vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet"> -->
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 <body id="page-top">
@@ -34,344 +35,92 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard.public') }}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Project Dislab</div>
+                <div class="sidebar-brand-text mx-3">Test project</div>
             </a>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
-            <!-- Nav Item - Dashboard -->
+
             <li class="nav-item">
-                <a class="nav-link" target="_blank" href="https://dstdelivery.sk-its.ru/api/documentation">
+                <a class="nav-link" href="{{ route('admin.show.all.users') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>@if(session()->get('locale') == "en") Swagger Api Documentation @else @lang('messages.Swagger Api Documentation') @endif</span></a>
-            </li>
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>@if(session()->get('locale') == "en") Dashboard @else @lang('messages.Dashboard') @endif</span></a>
-            </li>
-            
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.statistic') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>@if(session()->get('locale') == "en") Statistics @else @lang('messages.Statistics') @endif</span></a>
+                    <span>Users</span></a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.languages') }}">
+                <a class="nav-link" href="{{ route('admin.show.all.orders') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>@if(session()->get('locale') == "en") Languages @else @lang('messages.Languages') @endif</span></a>
+                    <span>Orders</span></a>
             </li>
-            
+           
             <!-- Divider -->
             <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                @if(session()->get('locale') == "en") Interface @else @lang('messages.Interface') @endif 
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.store') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add store @else @lang('messages.Add store') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
+            <?php $prods = App\Models\Products::get(); ?>
+            @if(!isset($prods))
+                <!-- Nav Item - Pages Collapse Menu -->
+                <li class="nav-item">
+                    <form action="{{ route('product.submit') }}" method="POST" class="form-horizontal" role="form">
+                        @csrf
+                        <button type="submit" class="btn btn-primary">set products</button>
+                    </form>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Custom Components:</h6>
+                            <a class="collapse-item" href="buttons.html">Buttons</a>
+                            <a class="collapse-item" href="cards.html">Cards</a>
+                        </div>
                     </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.Bigstore') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add Big Store @else @lang('messages.Add Big Store') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-             <!-- Nav Item - Pages Collapse Menu -->
-             <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.category') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add Category @else @lang('messages.Add Category') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-             <!-- Nav Item - Pages Collapse Menu -->
-             <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.subCategory') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add Sub Category @else @lang('messages.Add Sub Category') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.childsubCategory') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add Child Sub Category @else @lang('messages.Add Child Sub Category') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.products') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add Product @else @lang('messages.Add Product') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('admin.option') }}" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>@if(session()->get('locale') == "en") Add Option @else @lang('messages.Add Option') @endif</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
+                </li>
+            @endif
 
         </ul>
-        <!-- End of Sidebar -->
+            <div class="container-fluid">
+                <br>
+                <h1 class="h3 mb-2 text-gray-800">All Orders</h1>
 
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
-            <div id="content">
-
-                <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <form class="form-inline">
-                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                            <i class="fa fa-bars"></i>
-                        </button>
-                    </form>
-
-                    <!-- Topbar Search -->
-                    <form action="{{ route('page.filter') }}" method="POST" 
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        @csrf
-                        <p>
-                        </p>
-                        <div class="d-flex">
-                        <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Select field @else @lang('messages.Select field') @endif</label>
-                            <select name ="table_name" class="form-select form-select-lg">
-                                @if(isset($productFilter))
-                                    <option selected value="Product">@if(session()->get('locale') == "en") Product @else @lang('messages.Product') @endif</option>
-                                @elseif(isset($optionFilter))
-                                    <option selected value="Option">@if(session()->get('locale') == "en") Option @else @lang('messages.Option') @endif</option>
-                                @elseif(isset($storeFilter))
-                                    <option selected value="Store">@if(session()->get('locale') == "en") Store @else @lang('messages.Store') @endif</option>
-                                @elseif(isset($categoryFilter))
-                                    <option selected value="Category">@if(session()->get('locale') == "en") Category @else @lang('messages.Category') @endif</option>
-                                @elseif(isset($subCategoryFilter))
-                                    <option selected value="SubCategory">@if(session()->get('locale') == "en") Sub Category @else @lang('messages.Sub Category') @endif</option>
-                                @elseif(isset($childSubCategoryFilter))
-                                    <option selected value="ChildSubCategory">@if(session()->get('locale') == "en") Child Sub Category @else @lang('messages.Child Sub Category') @endif</option>
-                                @else
-                                    <option selected value="Product">@if(session()->get('locale') == "en") Product @else @lang('messages.Product') @endif</option>
-                                    <option  value="Option">@if(session()->get('locale') == "en") Option @else @lang('messages.Option') @endif</option>
-                                    <option  value="Store">@if(session()->get('locale') == "en") Store @else @lang('messages.Store') @endif</option>
-                                    <option  value="Category">@if(session()->get('locale') == "en") Category @else @lang('messages.Category') @endif</option>
-                                    <option  value="SubCategory">@if(session()->get('locale') == "en") Sub Category @else @lang('messages.Sub Category') @endif</option>
-                                    <option  value="ChildSubCategory">@if(session()->get('locale') == "en") Child Sub Category @else @lang('messages.Child Sub Category') @endif</option>
-                                @endif
-                            </select>
-                            @if(session()->get('locale') == "en")
-                            <input type="text" name="name" class="form-control bg-light border-0 small" placeholder="Search for.."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            @else
-                            <input type="text" name="name" class="form-control bg-light border-0 small" placeholder="Искать.."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            @endif
-                            
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="submit">
-                                    @if(session()->get('locale') == "en") Search @else @lang('messages.Search') @endif
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-
-                 
-                </nav>
-                <!-- End of Topbar -->
-
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
-                    @if(isset($errors) && count($errors) > 0)
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            <ul class="list-unstyled">
-                                @foreach($errors as $error)
-                                <li> {{ $error[0] }} </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                    <section class="panel panel-default">
-                        <div class="panel-heading"> 
-                            <h3 class="panel-title">@if(session()->get('locale') == "en") Add Category @else @lang('messages.Add Category') @endif</h3> 
-                        </div> 
-                        <div class="panel-body">
-                            <!-- form-group // -->
-                            <form action="{{ route('category.submit') }}" method="POST" enctype="multipart/form-data" class="form-horizontal" role="form">
-                                @csrf
-                                <div class="form-group">
-                                    <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Title @else @lang('messages.title') @endif</label>
-                                    <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="title" id="name">
-                                    </div>
-                                </div> 
-                                <div class="form-group">
-                                    <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Photo File Name @else @lang('messages.Photo File Name') @endif</label>
-                                    <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="photoFileName" id="name">
-                                    </div>
-                                </div> 
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label" for="customFile">@if(session()->get('locale') == "en") Category images @else @lang('messages.Category images') @endif</label>
-                                    <div class="col-sm-9">
-                                    <input type="file" name="image[]" multiple="multiple" class="form-control" id="customFile" />
-                                    </div>
-                                </div> <!-- form-group // -->
-                                <div class="form-group">
-                                    <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Select the Big Store @else @lang('messages.Select the Big Store') @endif </label>
-                                    <select name="big_store_id" class="form-select form-select-lg">
-                                        @foreach($allBigStores as $bigStore)
-                                            <option value="{{$bigStore->id}}">{{$bigStore->name}}</option>
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+                    
+                    <div class="card-body">
+                        <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Category title</th>
+                                        <th>Category status</th>
+                                        <th>Category products</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    @if(isset($categoris))
+                                        @foreach($categoris as $key => $category)
+                                            <tr>
+                                                <td>{{$category->title}}</td>
+                                                <td>{{$category->status}}</td>
+                                                <td>
+                                                    @foreach($category->products as $key => $prod)
+                                                        ID: {{ $prod->title}}, Product title: {{ $prod->title}} <br>
+                                                    @endforeach
+                                                </td>
+                                            </tr>
                                         @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-3 col-sm-9">
-                                    <button type="submit" class="btn btn-primary">@if(session()->get('locale') == "en") Send @else @lang('messages.Send') @endif</button>
-                                    </div>
-                                </div> 
-                                <div class="form-group">
-                                    <div class="col-sm-offset-3 col-sm-9">
-                                    <a class="btn btn-primary" target="_blank" href="https://dstdelivery.sk-its.ru/api/documentation#/Category%20Section/c93ace596ff38f36f0b8a2f731f7495e">@if(session()->get('locale') == "en") Try in Swagger @else @lang('messages.Try in Swagger') @endif</a>
-                                    </div>
-                                </div> 
-                            </form>
-                            <!-- form-group // -->
+                                    @endif
+                                </tbody>
+                                
+                            </table>
                         </div>
-                    </section>
-                </div>
-                @if(count($allCategory) > 0)
-                    <div class="container-fluid">
-                        @if(isset($errors) && count($errors) > 0)
-                            <div class="alert alert-danger alert-dismissible fade show">
-                                <ul class="list-unstyled">
-                                    @foreach($errors as $error)
-                                    <li> {{ $error[0] }} </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-                        <section class="panel panel-default">
-                            <div class="panel-heading"> 
-                                <h3 class="panel-title">@if(session()->get('locale') == "en") Update Category @else @lang('messages.Update Category') @endif</h3> 
-                            </div> 
-                            <div class="panel-body">
-                                <!-- form-group // -->
-                                <form action="{{ route('category.update') }}" method="POST" class="form-horizontal" role="form">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") title @else @lang('messages.title') @endif</label>
-                                        <div class="col-sm-9">
-                                        <input type="text" class="form-control" name="title" id="name">
-                                        </div>
-                                    </div> 
-                                    <div class="form-group">
-                                        <label for="name" class="col-sm-3 control-label">@if(session()->get('locale') == "en") Select the category you want to update @else @lang('messages.Select the category you want to update') @endif </label>
-                                        <select name="category_id" class="form-select form-select-lg">
-                                            @foreach($allCategory as $category)
-                                                @if($category->status !== '001')
-                                                    <option value="{{$category->id}}">{{$category->title}}</option>
-                                                @endif    
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                  
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-3 col-sm-9">
-                                        <button type="submit" class="btn btn-primary">@if(session()->get('locale') == "en") Send @else @lang('messages.Send') @endif</button>
-                                        </div>
-                                    </div> 
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-3 col-sm-9">
-                                        <a class="btn btn-primary" target="_blank" href="https://dstdelivery.sk-its.ru/api/documentation#/Category%20Section/83a1b93582b6e800d1b44d33959d752d">@if(session()->get('locale') == "en") Try in Swagger @else @lang('messages.Try in Swagger') @endif</a>
-                                        </div>
-                                    </div> 
-                                </form>
-                                <!-- form-group // -->
-                            </div>
-                        </section>
                     </div>
-                @endif
+                </div>
+            </div>
+                
+                <!-- /.container-fluid -->
             </div>
             <!-- End of Main Content -->
-
             <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
@@ -413,15 +162,18 @@
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <!-- <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script> -->
-    <!-- <script src="{{asset('vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script> -->
-    <!-- <script src="{{asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script> -->
+   
     <script src="{{asset('js/sb-admin-2.min.js')}}"></script>
-    <!-- <script src="{{asset('vendor/datatables/jquery.dataTables.min.js')}}"></script> -->
-    <!-- <script src="{{asset('vendor/datatables/dataTables.bootstrap4.min.js')}}"></script> -->
-    <!-- <script src="{{asset('js/demo/datatables-demo.js')}}"></script> -->
-
+   
+    
+    <script type="text/javascript">
+  
+    $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+    });
+    
+    </script>
 </body>
-
 </html>

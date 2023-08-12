@@ -46,7 +46,7 @@
                                             <div class="alert alert-danger alert-dismissible fade show">
                                                 <ul class="list-unstyled">
                                                     @foreach($errors as $error)
-                                                    <li> {{ $error }} </li>
+                                                    <li> {{ $error[0] }} </li>
                                                     @endforeach
                                                 </ul>
                                             </div>

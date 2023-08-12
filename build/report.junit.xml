@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="C:\laragon\www\DstDelevery\phpunit.xml.dist" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.017153">
+    <testsuite name="ProtoneMedia Test Suite" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.017153">
+      <testsuite name="Tests\Feature\AdminOrdersControllerTest" file="C:\laragon\www\DstDelevery\tests\Feature\AdminOrdersControllerTest.php" tests="1" assertions="0" errors="1" failures="0" skipped="0" time="0.017153">
+        <testcase name="testShowAllOrders" file="C:\laragon\www\DstDelevery\tests\Feature\AdminOrdersControllerTest.php" line="15" class="Tests\Feature\AdminOrdersControllerTest" classname="Tests.Feature.AdminOrdersControllerTest" assertions="0" time="0.017153">
+          <error type="BadMethodCallException">Tests\Feature\AdminOrdersControllerTest::testShowAllOrders&#13;
+BadMethodCallException: Call to undefined method App\Models\Orders::factory()
+&#13;
+C:\laragon\www\DstDelevery\vendor\laravel\framework\src\Illuminate\Support\Traits\ForwardsCalls.php:71
+C:\laragon\www\DstDelevery\vendor\laravel\framework\src\Illuminate\Support\Traits\ForwardsCalls.php:36
+C:\laragon\www\DstDelevery\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:2335
+C:\laragon\www\DstDelevery\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:2347
+C:\laragon\www\DstDelevery\tests\Feature\AdminOrdersControllerTest.php:19
+C:\laragon\www\DstDelevery\vendor\laravel\framework\src\Illuminate\Foundation\Testing\TestCase.php:174</error>
+        </testcase>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
