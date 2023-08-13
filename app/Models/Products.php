@@ -3,12 +3,9 @@
 namespace App\Models;
 
 use App\Models\Carts;
-use App\Models\Stores;
 use App\Models\Photos;
 use App\Models\Prices;
-use App\Models\Options;
 use App\Models\Category;
-use App\Models\SubCategory;
 use App\Models\Rating;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
