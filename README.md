@@ -20,7 +20,7 @@
   SRIPE_SECRET_KEY = "sk_test_51KJDRFKNYfpQaKy1Xta6s6EXzHZlK1p5vh6ackiJeBep8mAm96pyCn1Yvlp1zIzBb0ijxsXGzIzmyiXvO0iAD2zi00VpzQq6XV"
 </p>
 
-<p align="center">After finish .env configuration create DB and mage this comand</p>
+<p align="center">After finish .env configuration create DB and make this comand</p>
 <p align="center">
   php artisan migrate:fresh && php artisan passport:install && php artisan serve
 </p>
@@ -33,10 +33,13 @@
 <p align="center">
   http://localhost:8000/admin  -> this url created for login admin<br>
   http://localhost:8000/admin/register/show -> this url created for register admin<br>
-  http://localhost:8000/admin/dashboard-public  -> in this url you can see button set products  that will create in youre DB products<br>
-  After click make this comand php artisan queue:work and when you see <br> 
-  App\Jobs\ProcessProductData ............................................ 12s DONE make Ctrl+c and then php artisan serve
-  for make automatic sudo apt-get install superviso in server 
+</p>
+
+<p align="center">
+  http://localhost:8000/admin/dashboard-public  -> in this url you can see button set products that will create inside youre DB products<br>
+  After click make this comand [ php artisan queue:work ] and then you can see <br> 
+  App\Jobs\ProcessProductData ............................................ 12s DONE -> then make [ Ctrl+c ] and then [ php artisan serve ]
+  for make job automatic make this comand in youre server sudo apt-get install superviso 
 </p>
 
 
