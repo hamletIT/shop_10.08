@@ -113,7 +113,7 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
             <?php $prods = App\Models\Products::get();?>
-            @if(!isset($prods) && !empty($prods))
+            @if(count($prods) == 0)
                 <!-- Nav Item - Pages Collapse Menu -->
                 <li class="nav-item">
                     <form action="{{ route('product.submit') }}" method="POST" class="form-horizontal" role="form">

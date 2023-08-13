@@ -72,8 +72,6 @@ Route::prefix('user')->group(function() {
     Route::get('/show/category',[CategoryController::class,'showCategory'])->name('show.category');
     
     Route::post('/filtered/product',[ProductController::class,'filterProduct'])->name('filter.product');
-
-   
 });
 
 
