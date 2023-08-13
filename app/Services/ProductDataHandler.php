@@ -11,7 +11,7 @@ use App\Models\Rating;
 use App\Models\pivot_categories_products;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+use Spatie\Image\Image;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Req;
 
@@ -33,13 +33,12 @@ class ProductDataHandler implements ProductDataHandlerInterface
 
     public function saveProductImages(string $imageUrl, int $productId)
     {
-        $response = Http::get($imageUrl);
         $destinationPath = 'public/Images';
-        $imageData = $response->body();
-        $image = Image::make($imageData);
+
+        $image = Image::load($imageUrl);
         $filename = uniqid() . '.jpg';
         $image->save(storage_path($destinationPath . '/' . $filename));
-        
+
         Photos::create([
             'path' => $filename,
             'product_id' => $productId,
@@ -48,10 +47,6 @@ class ProductDataHandler implements ProductDataHandlerInterface
         ]);
     }
 
-    public function saveCategory(array $categoryData)
-    {
-        return Category::insertGetId($categoryData);
-    }
     public function saveProductPrice(int $price, int $productId)
     {
         Prices::create([
@@ -68,16 +63,6 @@ class ProductDataHandler implements ProductDataHandlerInterface
             'product_id' => $productId,
             'count' => $count,
             'rate' => $rate,
-        ]);
-    }
-
-    public function saveProductCategoryPivot(int $categoryID, int $productId)
-    {
-        pivot_categories_products::create([
-            'category_id' => $categoryID,
-            'product_id' => $productId,
-            'updated_at' => now(),
-            'created_at' => now(),
         ]);
     }
 }

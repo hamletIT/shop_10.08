@@ -55,8 +55,10 @@ Route::prefix('user')->group(function() {
     Route::get('/dashboard',[AuthUserController::class,'dashboard'])->name('user.dashboard');
     Route::post('register',[AuthUserController::class,'register'])->name('user.register');
     Route::post('login',[AuthUserController::class,'login'])->name('user.login');
+    Route::get('/logout', [AuthUserController::class, 'logout'])->name('user.logout');
 
-    Route::post('save/checkoute',[CheckoutController::class,'checkout'])->name('user.checkout.save');
+
+    Route::post('/save/checkoute',[CheckoutController::class,'checkout'])->name('user.checkout.save');
     Route::get('/success',[CheckoutController::class,'successCheckout'])->name('checkout.success');
     Route::get('/cancel',[CheckoutController::class,'cancelCheckout'])->name('checkout.cancel');
     Route::get('/show/orders',[CheckoutController::class,'showOrders'])->name('show.orders');
@@ -81,6 +83,7 @@ Route::prefix('admin')->group(function() {
     Route::get('login/show',[AuthAdminController::class,'loginShow'])->name('admin.login.show');
     Route::get('/dashboard-public',[AuthAdminController::class,'dashboardPublic'])->name('admin.dashboard.public');
     Route::post('register',[AuthAdminController::class,'register'])->name('admin.register');
+    Route::get('/logout', [AuthAdminController::class, 'logout'])->name('admin.logout');
     Route::post('login',[AuthAdminController::class,'login'])->name('admin.login');
 
     Route::get('/show/orders',[AdminOrdesUsersController::class,'showAllOrders'])->name('admin.show.all.orders');

@@ -90,7 +90,7 @@
                         $tatalOrderPrice += $value->total_price;
                     }
                 ?>
-                <h1 class="h3 mb-2 text-gray-800">All Orders</h1> Sum price: {{$tatalOrderPrice}}
+                <h1 class="h3 mb-2 text-gray-800">All Orders</h1> Sum orders price: {{$tatalOrderPrice}}
 
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">

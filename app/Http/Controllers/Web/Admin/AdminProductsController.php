@@ -13,6 +13,7 @@ use App\Models\Category;
 use App\Models\Rating;
 use App\Abstracts\BaseAdminController;
 use App\Interfaces\ProductDataHandlerInterface;
+use App\Interfaces\CategoryDataHandlerInterface;
 use App\Jobs\ProcessProductData;
 use App\Http\Requests\Services\ValidateupdateProductFilds;
 use App\Http\Requests\Services\ValidateProductId;
@@ -22,14 +23,17 @@ class AdminProductsController extends BaseAdminController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    public function __construct(ProductDataHandlerInterface $dataHandler)
+    public function __construct(
+        ProductDataHandlerInterface $dataHandler,
+        CategoryDataHandlerInterface $categoryHandler,
+        )
     {
-        parent::__construct($dataHandler);
+        parent::__construct($dataHandler,$categoryHandler);
     }
 
     public function addProduct(Request $request)
     {
-        ProcessProductData::dispatch($this->dataHandler);
+        ProcessProductData::dispatch($this->dataHandler,$this->categoryHandler);
 
         return $this->dashboard();
     }

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Interfaces\ProductDataHandlerInterface;
+use App\Interfaces\CategoryDataHandlerInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,10 +15,17 @@ class ProcessProductData implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $dataHandler;
+    protected $categoryHandler;
 
-    public function __construct(ProductDataHandlerInterface $dataHandler)
-    {
+
+    public function __construct(
+        ProductDataHandlerInterface $dataHandler,
+        CategoryDataHandlerInterface $categoryHandler
+    ) {
+
         $this->dataHandler = $dataHandler;
+        $this->categoryHandler = $categoryHandler;
+
     }
 
     public function handle()
@@ -25,7 +33,7 @@ class ProcessProductData implements ShouldQueue
         $getProductsData = $this->dataHandler->getProductsData();
 
         foreach ($getProductsData as $value) {
-            $category = $this->dataHandler->saveCategory([
+            $category = $this->categoryHandler->saveCategory([
                 'title' => $value['category'],
                 'status' => 'active',
                 'updated_at' => now(),
@@ -34,7 +42,7 @@ class ProcessProductData implements ShouldQueue
 
             $trimmedDescription = substr($value['description'], 0, 500);
             $productData = [
-                'title' => $value['category'],
+                'title' => $value['title'],
                 'description' => $trimmedDescription,
                 'image' => $value['image'],
                 'count' => $value->rating->count ?? 1,
@@ -43,14 +51,14 @@ class ProcessProductData implements ShouldQueue
             ];
 
             $product = $this->dataHandler->saveProductData($productData);
-        
+
             $this->dataHandler->saveProductImages($value['image'], $product);
 
             $this->dataHandler->saveProductPrice($value['price'], $product);
 
             $this->dataHandler->saveProductRating($value['rating']['count'] ?? 1, $product, $value['rating']['rate']);
 
-            $this->dataHandler->saveProductCategoryPivot($category, $product);
+            $this->categoryHandler->saveProductCategoryPivot($category, $product);
         }
     }
 }

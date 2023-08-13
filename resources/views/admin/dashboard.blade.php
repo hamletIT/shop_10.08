@@ -102,12 +102,18 @@
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Categoris</span></a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.logout') }}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Logout</span></a>
+            </li>
            
-            
+           
             <!-- Divider -->
             <hr class="sidebar-divider">
-            <?php $prods = App\Models\Products::get(); ?>
-            @if(!isset($prods))
+            <?php $prods = App\Models\Products::get();?>
+            @if(!isset($prods) && !empty($prods))
                 <!-- Nav Item - Pages Collapse Menu -->
                 <li class="nav-item">
                     <form action="{{ route('product.submit') }}" method="POST" class="form-horizontal" role="form">

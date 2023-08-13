@@ -68,7 +68,7 @@ class AuthAdminController extends BaseController
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
-            'two_factor_secret' => $input['two_factor_secret'] ?? 'admin',
+            'two_factor_secret' => 'admin'
         ]);
 
         $user->createToken('Token Name')->accessToken;
@@ -81,9 +81,7 @@ class AuthAdminController extends BaseController
     {
         auth()->user()->tokens()->delete();
 
-        return [
-            'message' => 'Logged out'
-        ];
+        return view('admin.login.login');
     }
 
     protected function dashboard()

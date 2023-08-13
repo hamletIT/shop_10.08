@@ -67,9 +67,7 @@ class AuthUserController extends BaseController
     {
         auth()->user()->tokens()->delete();
 
-        return [
-            'message' => 'Logged out'
-        ];
+        return view('user.login.login');
     }
 
     public function dashboard() 
