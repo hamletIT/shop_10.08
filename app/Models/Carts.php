@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-use Session;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -29,7 +28,7 @@ class Carts extends Model
      * Get the phone record associated with the user.
      */
     public function product()
-{
-    return $this->belongsTo(Products::class);
-}
+    {
+        return $this->belongsTo(Products::class);
+    }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Session;
 use Illuminate\Database\Eloquent\Model;
 
 class pivot_categories_products extends Model

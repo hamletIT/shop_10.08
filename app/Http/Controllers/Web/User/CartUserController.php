@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Web\User;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller as BaseController;
 use App\Models\Carts;
 use App\Models\Products;
 use Carbon\Carbon;
 use Auth;
 use App\Http\Requests\Services\ValidateProductId;
 use App\Http\Requests\Services\ValidateProductIdAdnQty;
+use Illuminate\Routing\Controller as BaseController;
 
 class CartUserController extends BaseController
 {

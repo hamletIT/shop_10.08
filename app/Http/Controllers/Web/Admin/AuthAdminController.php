@@ -2,24 +2,18 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
-use Illuminate\Support\Facades\Validator;
-use App\Models\BigStores;
 use App\Models\User;
 use App\Models\Products;
 use App\Models\Prices;
 use App\Models\Category;
-use App\Models\Applications;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
-use App\Http\Services\VarableServices;
 use Illuminate\Support\Facades\Hash;
 use Auth;
 use App\Services\AdminDarta;
 use App\Http\Requests\Services\ValidateUserLogin;
 use App\Http\Requests\Services\ValidateRegister;
-
-
 use Illuminate\Routing\Controller as BaseController;
 
 class AuthAdminController extends BaseController
@@ -45,15 +39,6 @@ class AuthAdminController extends BaseController
 
     public function login(ValidateUserLogin $request)
     {
-        $rules = [
-                  'email'   => 'required|email',
-                  'password' => 'required'
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-          return redirect()->back()->with(array('errors' => $validator->getMessageBag()->toArray()));
-        }
-
         $user = User::where('email', $request['email'])->firstOrFail();
         Auth::login($user);
 

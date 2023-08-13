@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Web\User;
 
 use App\Models\RatingProducts;
-use App\Models\Products;
-use Illuminate\Http\Request;
 use Auth;
 use App\Services\UserData;
 use App\Http\Requests\Services\ValidateProductIdRating;
-
 use Illuminate\Routing\Controller as BaseController;
 
 class RatingController extends BaseController

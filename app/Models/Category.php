@@ -4,9 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\SubCategory; 
 use App\Models\Products;
-use App\Models\CategoryPhotos;
 
 class Category extends Model
 {

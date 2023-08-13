@@ -17,7 +17,6 @@ class ProcessProductData implements ShouldQueue
     protected $dataHandler;
     protected $categoryHandler;
 
-
     public function __construct(
         ProductDataHandlerInterface $dataHandler,
         CategoryDataHandlerInterface $categoryHandler
@@ -25,7 +24,6 @@ class ProcessProductData implements ShouldQueue
 
         $this->dataHandler = $dataHandler;
         $this->categoryHandler = $categoryHandler;
-
     }
 
     public function handle()

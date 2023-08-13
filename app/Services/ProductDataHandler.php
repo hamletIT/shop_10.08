@@ -3,14 +3,10 @@
 namespace App\Services;
 
 use App\Interfaces\ProductDataHandlerInterface;
-use App\Models\Category;
 use App\Models\Products;
 use App\Models\Photos;
 use App\Models\Prices;
 use App\Models\Rating;
-use App\Models\pivot_categories_products;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 use Spatie\Image\Image;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Req;
@@ -34,7 +30,6 @@ class ProductDataHandler implements ProductDataHandlerInterface
     public function saveProductImages(string $imageUrl, int $productId)
     {
         $destinationPath = 'public/Images';
-
         $image = Image::load($imageUrl);
         $filename = uniqid() . '.jpg';
         $image->save(storage_path($destinationPath . '/' . $filename));

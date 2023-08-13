@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Web\User;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller as BaseController;
-use App\Models\Products;
 use App\Models\ReviewProducts;
 use Auth;
 use App\Services\UserData;
 use App\Http\Requests\Services\ValidateProductIdReview;
+use Illuminate\Routing\Controller as BaseController;
 
 class ReviewController extends BaseController
 {

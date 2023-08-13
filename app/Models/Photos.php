@@ -1,13 +1,12 @@
 <?php
 
 namespace App\Models;
-use Session;
+
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Products;
 
 class Photos extends Model
 {
-
     /**
      * The attributes that are mass assignable.
      *
@@ -23,5 +22,4 @@ class Photos extends Model
     {
         return $this->belongsTo(Products::class);
     }
-
 }
