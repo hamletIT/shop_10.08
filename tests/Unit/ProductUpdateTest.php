@@ -8,7 +8,7 @@ use App\Models\Products;
 use App\Models\Prices;
 use App\Models\Rating;
 
-class UserTest extends TestCase
+class ProductUpdateTest extends TestCase
 {
     // use RefreshDatabase;
 
