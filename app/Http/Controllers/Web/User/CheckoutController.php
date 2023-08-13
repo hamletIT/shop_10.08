@@ -11,7 +11,7 @@ use Auth;
 use Intervention\Image\Exception\NotFoundException;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
-use App\Http\Requests\Services\ValidateSessionID;
+// use App\Http\Requests\Services\ValidateSessionID;
 use Illuminate\Routing\Controller as BaseController;
 
 class CheckoutController extends BaseController
@@ -82,9 +82,6 @@ class CheckoutController extends BaseController
         Stripe::setApiKey(env('SRIPE_SECRET_KEY'));
         $cuctomer = null;
         $sessionId = $request->get('session_id');
-        $validatedData = $this->validate($request, [
-            'session_id' => [new ValidateSessionID],
-        ]);
         $session = Session::retrieve($sessionId);
         
         if (!$session) {
