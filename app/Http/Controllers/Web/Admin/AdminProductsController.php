@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
@@ -26,8 +25,7 @@ class AdminProductsController extends BaseAdminController
     public function __construct(
         ProductDataHandlerInterface $dataHandler,
         CategoryDataHandlerInterface $categoryHandler,
-        )
-    {
+    ) {
         parent::__construct($dataHandler,$categoryHandler);
     }
 
@@ -52,6 +50,7 @@ class AdminProductsController extends BaseAdminController
             'description' => $request['description'],
             'count' => $request['count'],
         ]);
+
         $updatedProduct = Products::with('productPrice')->where('id',$request->id)->first();
         Prices::where('product_id',$updatedProduct->id)->update([
             'price'=>$request['price'],
@@ -61,9 +60,7 @@ class AdminProductsController extends BaseAdminController
             'rate' => $request['rate'],
         ]);
 
-        // return redirect()->route('admin.update.show',$request->id);
         return redirect()->to('/show-product-update/'.$request->id);
-        // return redirect()->back()->with(compact('updatedProduct'));
     }
 
     public function deleteProductByID(ValidateProductId $request)

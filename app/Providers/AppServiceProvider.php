@@ -17,7 +17,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(ProductDataHandlerInterface::class, ProductDataHandler::class);
         $this->app->bind(CategoryDataHandlerInterface::class, CategoryDataHandler::class);
-
     }
 
     /**

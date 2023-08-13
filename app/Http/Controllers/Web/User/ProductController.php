@@ -3,23 +3,11 @@
 namespace App\Http\Controllers\Web\User;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\Models\BigStores;
-use App\Models\User;
 use App\Models\Prices;
 use App\Models\Products;
-use App\Models\Applications;
 use App\Models\pivot_categories_products;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use App\Http\Services\VarableServices;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Routing\Controller as BaseController;
-use Auth;
-use DB;
 use App\Http\Requests\Services\ValidateProductFilter;
-
+use Illuminate\Routing\Controller as BaseController;
 
 class ProductController extends BaseController
 {

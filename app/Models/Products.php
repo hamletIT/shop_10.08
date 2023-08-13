@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Session;
 use App\Models\Carts;
 use App\Models\Stores;
 use App\Models\Photos;
@@ -12,10 +10,10 @@ use App\Models\Options;
 use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\Rating;
-
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
 class Products extends Model
 {
@@ -26,23 +24,10 @@ class Products extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'productNumber',
-        'rating',
-        'color',
-        'type',
+        'title',
         'description',
-        'photoFileName',
-        'photoFilePath',
-        'size',
-        'status',
-        'standardCost',
-        'listprice',
-        'totalPrice',
-        'weight',
-        'totalQty',
-        'sellStartDate',
-        'sellEndDate',
+        'image',
+        'count',
         'created_at',
         'updated_at',
     ];
@@ -52,11 +37,6 @@ class Products extends Model
         return $this->hasOne(Carts::class);
     }
 
-    public function store()
-    {
-        return $this->belongsTo(Stores::class);
-    }
-    
     public function productImages()
     {
         return $this->hasMany(Photos::class,'product_id');
@@ -81,20 +61,9 @@ class Products extends Model
     {
         return $this->hasMany(Rating::class,'product_id');
     }
-    
-
-    public function productOptions()
-    {
-        return $this->hasMany(Options::class,'product_id');
-    }
 
     public function categories()
     {
         return $this->belongsToMany(Category::class);
-    }
-
-    public function subCategories() 
-    {
-        return $this->belongsToMany(SubCategory::class, 'pivot_sub_categories_products', 'product_id', 'sub_category_id');
     }
 }

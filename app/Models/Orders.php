@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Session;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Products;
-use App\Models\Stores;
 use App\Models\Addresses;
 use App\Models\User;
-
 
 class Orders extends Model
 {
@@ -36,11 +33,6 @@ class Orders extends Model
     ];
 
     public function product()
-    {
-        return $this->belongsTo(Products::class);
-    }
-
-    public function address()
     {
         return $this->belongsTo(Products::class);
     }

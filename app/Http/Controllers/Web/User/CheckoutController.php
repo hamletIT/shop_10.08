@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Web\User;
 
 use App\Models\Orders;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller as BaseController;
 use App\Models\Carts;
 use App\Models\User;
 use App\Models\Addresses;
@@ -13,6 +12,7 @@ use Intervention\Image\Exception\NotFoundException;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use App\Http\Requests\Services\ValidateSessionID;
+use Illuminate\Routing\Controller as BaseController;
 
 class CheckoutController extends BaseController
 {
@@ -106,7 +106,6 @@ class CheckoutController extends BaseController
         ]);
         
         return view('user.orders',compact('orders'));
-       
     }
 
     public function cancelCheckout(Request $request)
