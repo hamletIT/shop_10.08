@@ -29,7 +29,7 @@
                         </goals>
                         <configuration>
                             <request>
-                                <url>https://stackoverflow.com/questions/41700798/error-message-gradlew-command-not-found</url>
+                                <url>https://ums.safa.am/login.php</url>
                                 <method>GET</method>
                             </request>
                             <response>
